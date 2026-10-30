@@ -8,6 +8,7 @@ node_modules/
 dist/
 
 # SecretGuard
+.secretguard/
 .secretguard/registry.json
 .env
 .env.*

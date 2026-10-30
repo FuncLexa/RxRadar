@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    @apply bg-canvas text-ink font-sans;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+  ::selection { background: #FFD84D; color: #14213D; }
+}
+
+@layer components {
+  /* --- ambient canvas: two static color fields behind the frosted shell --- */
+  .ambient {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  }
+  .ambient::before,
+  .ambient::after {
+    content: ''; position: absolute; border-radius: 9999px; filter: blur(80px);
+  }
+  .ambient::before {
+    width: 720px; height: 720px; top: -220px; left: -160px;
+    background: radial-gradient(circle at center, rgba(255,216,77,0.55), rgba(255,216,77,0) 65%);
+  }
+  .ambient::after {
+    width: 820px; height: 820px; bottom: -300px; right: -220px;
+    background: radial-gradient(circle at center, rgba(29,91,240,0.30), rgba(29,91,240,0) 65%);
+  }
+
+  /* --- frosted panel primitives (3 depths) --- */
+  .frost-shell {
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.65) inset,
+      0 0 0 1px rgba(20,33,61,0.06),
+      0 24px 48px -24px rgba(20,33,61,0.18);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    @apply rounded-panel;
+  }
+  .frost-panel {
+    background: rgba(255,255,255,0.45);
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 0 0 1px rgba(20,33,61,0.05);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
+    @apply rounded-card;
+  }
+  .frost-solid {
+    background: rgba(255,255,255,0.82);
+    border: 1px solid rgba(255,255,255,0.9);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 0 0 1px rgba(20,33,61,0.06);
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    @apply rounded-card;
+  }
+
+  /* --- type / control primitives --- */
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-faint;
+  }
+  .rule { @apply h-px w-full bg-line; }
+
+  .inline-input {
+    @apply w-full bg-transparent border-0 border-b border-transparent px-0 py-0.5 text-ink
+           placeholder:text-ink-faint focus:outline-none focus:border-primary transition-colors;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5
+           text-[15px] font-semibold text-white shadow-cta transition
+           hover:bg-primary-ink active:translate-y-px
+           disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none;
+  }
+  .btn-quiet {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5
+           text-sm font-medium text-ink-soft transition hover:bg-ink/5 hover:text-ink;
+  }
+
+  .seg {
+    @apply flex items-center gap-0.5 rounded-full p-0.5 text-xs
+           bg-white/50 ring-1 ring-white/70 backdrop-blur;
+  }
+  .seg > button {
+    @apply rounded-full px-2.5 py-1 font-medium text-ink-soft transition;
+  }
+  .seg > button[data-active='true'] {
+    @apply bg-ink text-white shadow-sm;
+  }
+
+  /* --- nav rail --- */
+  .rail-item {
+    @apply flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-ink-soft
+           transition hover:bg-white/50 hover:text-ink;
+  }
+  .rail-item[data-active='true'] {
+    @apply bg-white/70 text-ink shadow-glass-sm;
+  }
+  .rail-item svg { @apply shrink-0; }
+
+  /* --- demo badge (honesty chip) --- */
+  .demo-chip {
+    @apply inline-flex items-center gap-1 rounded-full bg-highlight/25 px-2 py-0.5
+           text-[10px] font-bold uppercase tracking-[0.1em] text-highlight-ink
+           ring-1 ring-highlight/40;
+  }
+
+  /* --- data table --- */
+  .dt { @apply w-full text-sm; }
+  .dt thead th {
+    @apply text-left text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-faint
+           px-3 py-2 border-b border-line;
+  }
+  .dt tbody td { @apply px-3 py-3 border-b border-line align-middle; }
+  .dt tbody tr:last-child td { @apply border-b-0; }
+  .dt tbody tr:hover { @apply bg-white/30; }
+
+  /* --- KPI card --- */
+  .kpi {
+    @apply frost-solid p-4 flex flex-col gap-1;
+  }
+  .kpi-label { @apply text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-faint; }
+  .kpi-value { @apply num text-[24px] font-bold tracking-tight text-ink leading-none; }
+  .kpi-delta-up   { @apply text-success; }
+  .kpi-delta-down { @apply text-danger; }
+
+  /* --- skeleton --- */
+  .skel { @apply bg-ink/5 rounded-md animate-pulse; }
+
+  /* --- expandable agent card --- */
+  .agent-expand {
+    @apply overflow-hidden transition-all duration-300 ease-out;
+  }
+
+  /* --- OCR dropzone --- */
+  .dropzone {
+    @apply relative flex flex-col items-center justify-center gap-2 rounded-xl
+           border-2 border-dashed border-line-strong bg-white/40
+           px-6 py-10 text-center transition cursor-pointer
+           hover:border-primary hover:bg-primary/[0.04];
+  }
+  .dropzone[data-dragging='true'] {
+    @apply border-primary bg-primary/[0.08];
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "request": {
+    "pincode": "560064",
+    "medicines": [
+      { "brand": "Jalra M 50/1000", "salt": "Vildagliptin + Metformin", "strength": "50mg + 1000mg", "per_day": 1, "hero": true },
+      { "brand": "Telma 40",        "salt": "Telmisartan",             "strength": "40mg",           "per_day": 1, "hero": false },
+      { "brand": "Rosuvas 10",      "salt": "Rosuvastatin",             "strength": "10mg",           "per_day": 1, "hero": false }
+    ]
+  },
+  "events": [
+    { "at_ms": 200,  "event": "agent_status", "data": { "pharmacy": "pharmeasy", "status": "queued" } },
+    { "at_ms": 200,  "event": "agent_status", "data": { "pharmacy": "1mg",       "status": "queued" } },
+    { "at_ms": 200,  "event": "agent_status", "data": { "pharmacy": "apollo",    "status": "queued" } },
+
+    { "at_ms": 400,  "event": "agent_status", "data": { "pharmacy": "pharmeasy", "status": "starting", "message": "Connecting to PharmEasy catalog API" } },
+    { "at_ms": 600,  "event": "agent_status", "data": { "pharmacy": "1mg",       "status": "starting", "message": "Launching headless browser" } },
+    { "at_ms": 800,  "event": "agent_status", "data": { "pharmacy": "apollo",    "status": "starting", "message": "Launching headless browser" } },
+
+    { "at_ms": 1200, "event": "agent_status", "data": { "pharmacy": "pharmeasy", "status": "browsing", "message": "Searching catalog for 3 medicines" } },
+    { "at_ms": 1500, "event": "agent_live_url", "data": { "pharmacy": "1mg", "url": "https://www.1mg.com/search/all?name=jalra%20m" } },
+    { "at_ms": 1500, "event": "agent_status", "data": { "pharmacy": "1mg", "status": "browsing", "message": "Navigating to 1mg search results" } },
+    { "at_ms": 1800, "event": "agent_live_url", "data": { "pharmacy": "apollo", "url": "https://www.apollopharmacy.in/search-medicine/jalra%20m" } },
+    { "at_ms": 1800, "event": "agent_status", "data": { "pharmacy": "apollo", "status": "browsing", "message": "Loading Apollo Pharmacy results" } },
+
+    { "at_ms": 2400, "event": "agent_status", "data": { "pharmacy": "1mg", "status": "browsing", "message": "Reading product cards (1 of 3)" } },
+    { "at_ms": 3000, "event": "agent_status", "data": { "pharmacy": "apollo", "status": "browsing", "message": "Reading product cards (1 of 3)" } },
+    { "at_ms": 3200, "event": "agent_status", "data": { "pharmacy": "pharmeasy", "status": "extracting", "message": "Normalising 12 products to per-tablet price" } },
+
+    { "at_ms": 4200, "event": "agent_status", "data": { "pharmacy": "pharmeasy", "status": "done", "message": "12 products matched · 4 same-salt" } },
+    { "at_ms": 4200, "event": "price_result", "data": {
+      "pharmacy": "pharmeasy",
+      "products": [
+        { "name": "Jalra M 50/1000 (strip of 15)", "per_unit": 32.50, "pack": "15 tabs", "price": 487.50, "salt_match": true,  "cheapest": true },
+        { "name": "Zita Plus 50/1000",             "per_unit": 28.10, "pack": "15 tabs", "price": 421.50, "salt_match": true },
+        { "name": "Telma 40 (strip of 30)",        "per_unit": 4.20,  "pack": "30 tabs", "price": 126.00, "salt_match": true },
+        { "name": "Telmisartan 40 (generic)",      "per_unit": 2.85,  "pack": "30 tabs", "price": 85.50,  "salt_match": true,  "cheapest": true },
+        { "name": "Rosuvas 10 (strip of 15)",      "per_unit": 14.60, "pack": "15 tabs", "price": 219.00, "salt_match": true,  "cheapest": true },
+        { "name": "Rosuvas 10 (strip of 10)",      "per_unit": 11.40, "pack": "10 tabs", "price": 114.00, "salt_match": false }
+      ]
+    }},
+
+    { "at_ms": 5200, "event": "summary", "data": {
+      "final": false,
+      "sources_done": ["pharmeasy"],
+      "totals": { "monthly_saving": 229, "annual_saving": 2750 },
+      "swaps": [
+        { "allowed": true, "saving_per_year": 2750, "current": { "name": "Jalra M 50/1000", "per_unit": 32.50 }, "cheapest": { "name": "Zita Plus 50/1000", "per_unit": 28.10 }, "pharmacy": "pharmeasy", "salt_match": true }
+      ],
+      "coverage": "PharmEasy checked for all 3 medicines"
+    }},
+
+    { "at_ms": 6200, "event": "agent_status", "data": { "pharmacy": "1mg", "status": "browsing", "message": "Reading product cards (2 of 3)" } },
+    { "at_ms": 6800, "event": "agent_status", "data": { "pharmacy": "apollo", "status": "browsing", "message": "Reading product cards (2 of 3)" } },
+    { "at_ms": 7200, "event": "agent_status", "data": { "pharmacy": "1mg", "status": "extracting", "message": "Normalising 9 products to per-tablet price" } },
+
+    { "at_ms": 8200, "event": "agent_status", "data": { "pharmacy": "1mg", "status": "done", "message": "9 products matched · 4 same-salt" } },
+    { "at_ms": 8200, "event": "price_result", "data": {
+      "pharmacy": "1mg",
+      "products": [
+        { "name": "Jalra M 50/1000 (strip of 15)", "per_unit": 31.80, "pack": "15 tabs", "price": 477.00, "salt_match": true },
+        { "name": "Glycomet GP 1 (strip of 15)",   "per_unit": 12.60, "pack": "15 tabs", "price": 189.00, "salt_match": true, "cheapest": true },
+        { "name": "Telma 40 (strip of 30)",        "per_unit": 3.85,  "pack": "30 tabs", "price": 115.50, "salt_match": true, "cheapest": true },
+        { "name": "Rosuvas 10 (strip of 15)",      "per_unit": 13.20, "pack": "15 tabs", "price": 198.00, "salt_match": true, "cheapest": true },
+        { "name": "Rosuvas 20 (strip of 10)",      "per_unit": 9.50,  "pack": "10 tabs", "price": 95.00,  "salt_match": false }
+      ]
+    }},
+
+    { "at_ms": 9200, "event": "summary", "data": {
+      "final": false,
+      "sources_done": ["pharmeasy", "1mg"],
+      "totals": { "monthly_saving": 512, "annual_saving": 6144 },
+      "swaps": [
+        { "allowed": true, "saving_per_year": 6144, "current": { "name": "Jalra M 50/1000", "per_unit": 32.50 }, "cheapest": { "name": "Glycomet GP 1", "per_unit": 12.60 }, "pharmacy": "1mg", "salt_match": true }
+      ],
+      "coverage": "1mg & PharmEasy checked for all 3 medicines"
+    }},
+
+    { "at_ms": 9600, "event": "agent_status", "data": { "pharmacy": "apollo", "status": "browsing", "message": "Reading product cards (3 of 3)" } },
+    { "at_ms": 10200, "event": "agent_status", "data": { "pharmacy": "apollo", "status": "extracting", "message": "Normalising 7 products to per-tablet price" } },
+
+    { "at_ms": 11000, "event": "agent_status", "data": { "pharmacy": "apollo", "status": "done", "message": "7 products matched · 3 same-salt" } },
+    { "at_ms": 11000, "event": "price_result", "data": {
+      "pharmacy": "apollo",
+      "products": [
+        { "name": "Jalra M 50/1000 (strip of 15)", "per_unit": 33.10, "pack": "15 tabs", "price": 496.50, "salt_match": true },
+        { "name": "Zita Plus 50/1000",             "per_unit": 26.40, "pack": "15 tabs", "price": 396.00, "salt_match": true },
+        { "name": "Glycomet GP 1 (strip of 15)",   "per_unit": 12.40, "pack": "15 tabs", "price": 186.00, "salt_match": true, "cheapest": true },
+        { "name": "Telma 40 (strip of 30)",        "per_unit": 3.60,  "pack": "30 tabs", "price": 108.00, "salt_match": true, "cheapest": true },
+        { "name": "Rosuvas 10 (strip of 15)",      "per_unit": 11.20, "pack": "15 tabs", "price": 168.00, "salt_match": true, "cheapest": true }
+      ]
+    }},
+
+    { "at_ms": 11800, "event": "summary", "data": {
+      "final": true,
+      "sources_done": ["pharmeasy", "1mg", "apollo"],
+      "totals": { "monthly_saving": 1068, "annual_saving": 12816 },
+      "swaps": [
+        { "allowed": true, "saving_per_year": 6144, "current": { "name": "Jalra M 50/1000", "per_unit": 32.50 }, "cheapest": { "name": "Glycomet GP 1", "per_unit": 12.40 }, "pharmacy": "apollo", "salt_match": true },
+        { "allowed": true, "saving_per_year": 3942, "current": { "name": "Telma 40", "per_unit": 4.20 }, "cheapest": { "name": "Telmisartan 40 (generic)", "per_unit": 2.85 }, "pharmacy": "pharmeasy", "salt_match": true },
+        { "allowed": false, "saving_per_year": 0, "current": { "name": "Rosuvas 10", "per_unit": 14.60 }, "cheapest": null, "pharmacy": null, "salt_match": false, "flags": ["Narrow therapeutic index — not switched"] }
+      ],
+      "coverage": "All 3 pharmacies checked"
+    }}
+  ]
+}
