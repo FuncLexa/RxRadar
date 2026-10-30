@@ -142,6 +142,7 @@ async def run_search(req: SearchRequest, em: Emitter):
         except Exception:
             em.cost = None
         summary(final=True)
+        await run_proofs(req, em, results, sources_done)
     except Exception as e:
         em.emit("error", {"pharmacy": None, "message": str(e)[:200]})
     finally:
@@ -204,6 +205,8 @@ async def run_replay(em: Emitter, path: str):
                 results[(data["pharmacy"], data["salt"])] = data["products"]
             elif name == "generic_option":
                 results[("jan_aushadhi", data["salt"])] = {k: v for k, v in data.items() if k != "salt"}
+            elif name == "proof":
+                results[("proof", data["salt"])] = {k: v for k, v in data.items() if k not in ("salt", "pharmacy")}
             elif name == "summary":
                 data = {**build_summary(req, results, data.get("sources_done", []), data.get("final", False)), "cost": getattr(em, "cost", None)}
             em.emit(name, data)
@@ -231,3 +234,33 @@ def local_cost(em) -> dict:
     return {"agent_steps": steps, "browser_minutes": round(minutes, 1),
             "usd": round(usd, 3), "inr": round(usd * config.USD_INR, 1),
             "note": "Fetch + Search are free; cost is browser agents only"}
+
+
+async def run_proofs(req, em, results, sources_done):
+    """TinyFish Browser API: screenshot the real PharmEasy page with the cheapest option highlighted."""
+    from app.browser_proof import proof_screenshot
+    from app.optimiser import display_name
+    from app.salts import NTI_SALTS
+
+    shots = 0
+    for m in req.medicines:
+        if shots >= 2 or m.salt in NTI_SALTS:
+            continue
+        prods = [p for p in results.get(("pharmeasy", m.salt), []) if p.get("salt_match") and p.get("per_unit")]
+        if not prods:
+            continue
+        best = min(prods, key=lambda p: p["per_unit"])
+        name = display_name(best["name"])
+        tag = f"{em.search_id}_{m.salt.replace('+', '_')}"
+        r = await proof_screenshot(name, best["name"], tag)
+        if r and not r.get("error"):
+            info = {"product": name, "per_unit": best["per_unit"], "image": r["image"],
+                    "highlighted": r["highlighted"], "source_url": r["source_url"]}
+            results[("proof", m.salt)] = info
+            em.emit("proof", {"salt": m.salt, "pharmacy": "pharmeasy", **info})
+            shots += 1
+        else:
+            em.emit("error", {"pharmacy": "proof", "message": (r or {}).get("error", "no result")})
+    if shots:
+        em.emit("summary", {**build_summary(req, results, sources_done, True),
+                            "cost": getattr(em, "cost", None)})

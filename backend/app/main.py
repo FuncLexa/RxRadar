@@ -77,3 +77,19 @@ async def create_monitor(body: MonitorRequest):
     except Exception as ex:
         raise HTTPException(status_code=502, detail=str(ex)[:200])
     return {"monitor_id": str(mid), "schedule": "daily 9:00 AM", "status": "active"}
+
+
+from app.salts import PRESETS
+
+
+@app.get("/api/medicines")
+def medicines():
+    """Quick-pick presets for the UI dropdown (brand, salt, strength)."""
+    return {"medicines": PRESETS}
+
+
+import os as _os
+from fastapi.staticfiles import StaticFiles
+
+_os.makedirs(_os.path.join("static", "proofs"), exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")

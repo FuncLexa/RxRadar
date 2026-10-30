@@ -110,3 +110,54 @@ def check(product: dict, salt: str, strength: str) -> dict:
     p["salt_match"] = ok
     p["reject_reason"] = reason
     return p
+
+
+# ---- Extended coverage: common chronic salts (brands from 21 Oct PharmEasy study) ----
+SALT_DB.update({
+    "sitagliptin+metformin": {
+        "brands": ["Janumet", "Istamet", "Sitared M", "Sitaglo M", "Sitaxa M", "Zavamet",
+                   "Sitamax M", "Lupisit M"],
+        "reject_words": ["xr", "cp", "od"],
+    },
+    "glimepiride": {
+        "brands": ["Amaryl", "Zoryl", "Glimy", "Glimestar", "Azulix", "GP"],
+        "reject_words": ["m", "mv", "forte", "pg", "trio"],
+    },
+    "telmisartan": {
+        "brands": ["Telma", "Telvas", "Telista", "Telmed", "Telsar", "Tazloc"],
+        "reject_words": ["am", "h", "ct", "ah", "beta", "trio", "ln", "r"],
+    },
+    "amlodipine": {
+        "brands": ["Amlong", "Stamlo", "Amlopin", "Amlodac", "Amlovas", "Amlip"],
+        "reject_words": ["a", "tl", "at", "l", "m", "beta", "h"],
+    },
+    "clopidogrel": {
+        "brands": ["Clopilet", "Clopitab", "Deplatt", "Plavix", "Clavix"],
+        "reject_words": ["cv", "a", "asp", "gold", "f"],
+    },
+    "atorvastatin": {
+        "brands": ["Atorva", "Lipvas", "Storvas", "Tonact", "Aztor", "Atocor"],
+        "reject_words": ["asp", "f", "ez", "cv", "gold", "fenofibrate", "ezetimibe", "aspirin"],
+    },
+})
+
+PRESETS = [
+    {"brand": "Jalra M", "salt": "vildagliptin+metformin", "strength": "50mg/500mg"},
+    {"brand": "Janumet", "salt": "sitagliptin+metformin", "strength": "50mg/500mg"},
+    {"brand": "Amaryl 1", "salt": "glimepiride", "strength": "1mg"},
+    {"brand": "Novastat 10", "salt": "rosuvastatin", "strength": "10mg"},
+    {"brand": "Atorva 10", "salt": "atorvastatin", "strength": "10mg"},
+    {"brand": "Telma 40", "salt": "telmisartan", "strength": "40mg"},
+    {"brand": "Amlong 5", "salt": "amlodipine", "strength": "5mg"},
+    {"brand": "Clopilet 75", "salt": "clopidogrel", "strength": "75mg"},
+    {"brand": "Thyronorm 50", "salt": "levothyroxine", "strength": "50mcg"},
+]
+
+
+# ---- Combo markers found in live data (30 Oct) ----
+SALT_DB["glimepiride"]["reject_words"] += ["mf", "p", "v", "pm"]
+SALT_DB["telmisartan"]["reject_words"] += ["amh", "mt", "cl", "ch", "md"]
+SALT_DB["amlodipine"]["reject_words"] += ["lo", "s", "b", "nb"]
+SALT_DB["atorvastatin"]["reject_words"] += ["a", "c", "d"]
+
+SALT_DB['vildagliptin+metformin']['brands'].append('Vigliptin M')

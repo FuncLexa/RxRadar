@@ -47,3 +47,11 @@ def test_new_cases():
     assert v("Intaglip M Strip Of 10 Tablets", VM) is False
     qs = pharmeasy_queries("Novastat 10", "rosuvastatin", "10mg")
     assert len(qs) <= 10 and "Rosuvas 10mg" in qs
+
+
+def test_extended_combos():
+    assert validate({"name": "Azulix Mf 1Mg Strip Of 15 Tablets"}, "glimepiride", "1mg")[0] is False
+    assert validate({"name": "Glimestar 1Mg Strip Of 10 Tablets"}, "glimepiride", "1mg")[0] is True
+    assert validate({"name": "Telma Amh 40Mg Strip Of 15 Tablets"}, "telmisartan", "40mg")[0] is False
+    assert validate({"name": "Telvas 40Mg Strip Of 15 Tablets"}, "telmisartan", "40mg")[0] is True
+    assert validate({"name": "Stamlo 5Mg Strip Of 30 Tablets"}, "amlodipine", "5mg")[0] is True
