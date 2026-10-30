@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +12,7 @@ app = FastAPI(title="RxRadar API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -88,8 +89,8 @@ def medicines():
     return {"medicines": PRESETS}
 
 
-import os as _os
 from fastapi.staticfiles import StaticFiles
 
-_os.makedirs(_os.path.join("static", "proofs"), exist_ok=True)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+_static_dir = Path(__file__).resolve().parents[1] / "static"
+_static_dir.joinpath("proofs").mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(_static_dir)), name="static")

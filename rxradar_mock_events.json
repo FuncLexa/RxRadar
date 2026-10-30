@@ -100,6 +100,7 @@
         { "allowed": false, "saving_per_year": 0, "current": { "name": "Rosuvas 10", "per_unit": 14.60 }, "cheapest": null, "pharmacy": null, "salt_match": false, "flags": ["Narrow therapeutic index — not switched"] }
       ],
       "coverage": "All 3 pharmacies checked"
-    }}
+    }},
+    { "at_ms": 12000, "event": "done", "data": { "search_id": "mock_replay", "duration_ms": 12000 } }
   ]
 }

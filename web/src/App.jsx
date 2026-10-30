@@ -9,7 +9,7 @@ import Settings from './pages/Settings'
 import OCRUpload from './components/OCRUpload'
 import SectionHead from './components/SectionHead'
 import { ToastStack, useToast } from './components/Toast'
-import { startSearch, stopSearch } from './lib/stream'
+import { createMonitor, startSearch, stopSearch } from './lib/stream'
 import { savePrescription, addReminder, recordRun, wipeAll } from './lib/storage'
 
 const DEFAULT_PINCODE = '560064'
@@ -38,6 +38,7 @@ export default function App() {
   const [agents, setAgents] = useState(EMPTY_AGENTS)
   const [results, setResults] = useState({})
   const [summary, setSummary] = useState(null)
+  const [searchId, setSearchId] = useState(null)
   const { toasts, push } = useToast()
   const lastCheapestRef = useRef(null)
 
@@ -70,11 +71,13 @@ export default function App() {
     setAgents(EMPTY_AGENTS())
     setResults({})
     setSummary(null)
+    setSearchId(null)
     lastCheapestRef.current = null
 
     const request = { pincode, medicines: medicines.map((m, i) => ({ ...m, hero: i === heroId })) }
 
     startSearch(request, {
+      search_started: (d) => setSearchId(d.search_id || null),
       agent_status: (d) => {
         setAgents(prev => {
           const cur = prev[d.pharmacy] || { messages: [], url: null, status: 'queued' }
@@ -83,7 +86,9 @@ export default function App() {
         })
       },
       agent_live_url: (d) => {
-        setAgents(prev => ({ ...prev, [d.pharmacy]: { ...prev[d.pharmacy], url: d.url } }))
+        // `streaming_url` is the live API contract; `url` keeps the bundled
+        // offline demo fixture compatible with the same UI.
+        setAgents(prev => ({ ...prev, [d.pharmacy]: { ...prev[d.pharmacy], url: d.streaming_url || d.url } }))
       },
       price_result: (d) => {
         setResults(prev => {
@@ -100,7 +105,7 @@ export default function App() {
         }
 
         const top = d.swaps?.find(s => s.allowed && s.saving_per_year > 0)
-        const topPharmacy = top?.pharmacy ?? null
+        const topPharmacy = top?.cheapest?.pharmacy || top?.pharmacy || null
         if (topPharmacy && topPharmacy !== lastCheapestRef.current) {
           const name = PHARMACY_NAMES[topPharmacy] || topPharmacy
           const label = d.final
@@ -110,6 +115,10 @@ export default function App() {
           lastCheapestRef.current = topPharmacy
         }
       },
+      error: (d) => {
+        if (d?.message) push({ message: d.message })
+      },
+      done: () => setRunning(false),
     }, { mode, speed })
   }, [canSearch, pincode, medicines, heroId, mode, speed, push, summary])
 
@@ -119,6 +128,7 @@ export default function App() {
     setAgents(EMPTY_AGENTS())
     setResults({})
     setSummary(null)
+    setSearchId(null)
     lastCheapestRef.current = null
   }
 
@@ -130,7 +140,29 @@ export default function App() {
     push({ message: 'Prescription saved to this device' })
   }
 
-  const onMonitor = () => {
+  const onMonitor = async () => {
+    const heroMed = medicines[heroId]
+    const swap = summary?.swaps?.find(s => s.salt === heroMed?.salt)
+    const target = swap?.cheapest?.per_unit
+    if (!searchId || !heroMed || !Number.isFinite(target)) {
+      push({ message: 'Finish a search with a valid price before creating a monitor.' })
+      return
+    }
+    try {
+      await createMonitor({
+        search_id: searchId,
+        salt: heroMed.salt,
+        pharmacy: swap?.cheapest?.pharmacy || 'pharmeasy',
+        target_per_unit: target,
+      })
+      addReminder({ medicine: heroMed.brand, time: '09:00' })
+      push({ message: 'Monitor active — daily 9:00 AM. We’ll alert you on price drops.' })
+    } catch (error) {
+      push({ message: error.message || 'Could not create the refill monitor.' })
+    }
+  }
+
+  const legacyMonitor = () => {
     setTimeout(() => {
       const heroMed = medicines[heroId]
       if (heroMed) addReminder({ medicine: heroMed.brand, time: '09:00' })

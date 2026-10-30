@@ -5,7 +5,9 @@ if (typeof window !== 'undefined') {
 }
 
 export const API_BASE =
-  (typeof window !== 'undefined' && window.__RX_API__) || 'http://localhost:8000'
+  (typeof window !== 'undefined' && window.__RX_API__) ||
+  import.meta.env.VITE_API_BASE ||
+  'http://localhost:8000'
 
 const EVENTS = [
   'search_started', 'agent_status', 'agent_live_url', 'price_result',
@@ -43,6 +45,20 @@ function runBackend(request, handlers, mode, speed) {
   let es = null
   let cancelled = false
   let fallback = null
+  let finished = false
+
+  const finish = (data = {}) => {
+    if (finished || cancelled) return
+    finished = true
+    if (es) es.close()
+    emit('done', data)
+  }
+
+  const useMockFallback = (message) => {
+    if (finished || cancelled || fallback) return
+    if (message) emit('error', { pharmacy: null, message })
+    fallback = replayMock(request, handlers, speed)
+  }
 
   const run = {
     cancel() {
@@ -63,7 +79,7 @@ function runBackend(request, handlers, mode, speed) {
       if (!r.ok) {
         const text = await r.text()
         emit('error', { pharmacy: null, message: `Backend rejected request (${r.status}): ${text.slice(0, 200)}` })
-        emit('done', { search_id: null, duration_ms: 0 })
+        finish({ search_id: null, duration_ms: 0 })
         return null
       }
       return r.json()
@@ -71,8 +87,7 @@ function runBackend(request, handlers, mode, speed) {
     .then((res) => {
       if (!res || cancelled) return
       if (!res.search_id) {
-        emit('error', { pharmacy: null, message: 'No saved live run available for replay yet' })
-        emit('done', { search_id: null, duration_ms: 0 })
+        useMockFallback('No saved live run available; showing the bundled demo replay.')
         return
       }
       es = new EventSource(`${API_BASE}/api/search/${res.search_id}/stream`)
@@ -81,15 +96,24 @@ function runBackend(request, handlers, mode, speed) {
           let data = {}
           try { data = JSON.parse(e.data) } catch (_) {}
           emit(name, data)
-          if (name === 'done') es.close()
+          if (name === 'done') {
+            finished = true
+            es.close()
+          }
         })
       )
-      es.onerror = () => {}
+      es.onerror = () => {
+        if (!finished && !cancelled) {
+          es.close()
+          emit('error', { pharmacy: null, message: 'The live result stream was interrupted.' })
+          finish({ search_id: res.search_id, duration_ms: 0 })
+        }
+      }
     })
     .catch((err) => {
       if (cancelled) return
       console.warn('[RxRadar] backend unreachable, using bundled mock:', err)
-      fallback = replayMock(request, handlers, speed)
+      useMockFallback('Backend unavailable; showing the bundled demo replay.')
     })
 
   return run
