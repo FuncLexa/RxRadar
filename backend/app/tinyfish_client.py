@@ -132,3 +132,23 @@ async def web_search(query: str, timeout_s: int = 10) -> list[dict]:
             "site": getattr(r, "site_name", "") or "",
         })
     return out
+
+
+async def estimate_cost(since_epoch: float) -> dict:
+    """Real TinyFish cost of agent runs created since this search started."""
+    from datetime import datetime, timezone
+    from app import config as _cfg
+
+    since = datetime.fromtimestamp(since_epoch - 5, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    resp = await asyncio.wait_for(client().runs.list(created_after=since, limit=20), timeout=10)
+    steps, minutes, n = 0, 0.0, 0
+    for r in getattr(resp, "data", []) or []:
+        n += 1
+        steps += getattr(r, "num_of_steps", 0) or 0
+        s, f = getattr(r, "started_at", None), getattr(r, "finished_at", None)
+        if s and f:
+            minutes += (f - s).total_seconds() / 60
+    usd = steps * 0.016 + minutes * 0.002
+    return {"agent_runs": n, "agent_steps": steps, "browser_minutes": round(minutes, 1),
+            "usd": round(usd, 3), "inr": round(usd * _cfg.USD_INR, 1),
+            "note": "Fetch + Search are free; cost is browser agents only"}

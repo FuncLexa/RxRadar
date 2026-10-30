@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "scan": {
+    "stagedOnly": true,
+    "autoMigrate": false,
+    "maxFileSize": 1048576,
+    "excludePatterns": [
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      ".git/**",
+      "tests/**",
+      "*.test.js",
+      "*.spec.js",
+      "*.log",
+      "*.lock",
+      "package-lock.json",
+      "yarn.lock",
+      "pnpm-lock.yaml"
+    ],
+    "includePatterns": []
+  },
+  "migration": {
+    "enabled": true,
+    "envFile": ".env",
+    "envExampleFile": ".env.example",
+    "backup": true,
+    "transformers": {
+      "javascript": true,
+      "typescript": true,
+      "python": false
+    }
+  },
+  "lifecycle": {
+    "tracking": true,
+    "registryFile": ".secretguard/registry.json",
+    "fingerprintAlgorithm": "sha256"
+  },
+  "git": {
+    "hookPath": ".git/hooks/pre-commit",
+    "reStageOnMigration": true
+  },
+  "detectors": {
+    "enabled": [
+      "api-keys",
+      "tokens",
+      "passwords"
+    ],
+    "customPatterns": [],
+    "minEntropy": 3.5
+  }
+}

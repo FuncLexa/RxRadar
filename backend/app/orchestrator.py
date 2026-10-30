@@ -12,7 +12,7 @@ from app.models import SearchRequest
 from app.optimiser import build_summary
 from app.pharmacies import apollo, onemg, pharmeasy_multi
 from app.salts import check, pharmeasy_queries
-from app.tinyfish_client import AgentTimeout
+from app.tinyfish_client import AgentTimeout, estimate_cost
 
 PHARMACIES = ["pharmeasy", "1mg", "apollo"]
 SEARCHES: dict = {}
@@ -62,7 +62,7 @@ async def run_search(req: SearchRequest, em: Emitter):
     sources_done: list = []
 
     def summary(final=False):
-        em.emit("summary", build_summary(req, results, sources_done, final))
+        em.emit("summary", {**build_summary(req, results, sources_done, final), "cost": getattr(em, "cost", None)})
 
     def status(pharmacy, s, msg, t0):
         em.emit("agent_status", {
@@ -78,6 +78,7 @@ async def run_search(req: SearchRequest, em: Emitter):
             em.emit("agent_live_url", {"pharmacy": pharmacy, "salt": hero.salt, "streaming_url": url})
 
         def on_progress(text):
+            em.steps = getattr(em, "steps", 0) + 1
             low = (text or "").lower()
             s = "extracting" if any(k in low for k in ("extract", "price", "read", "return")) else "browsing"
             status(pharmacy, s, (text or "Working")[:140], t0)
@@ -94,6 +95,7 @@ async def run_search(req: SearchRequest, em: Emitter):
         except Exception as e:
             status(pharmacy, "failed", "Unavailable", t0)
             em.emit("error", {"pharmacy": pharmacy, "message": str(e)[:200]})
+        em.agent_secs = getattr(em, "agent_secs", 0) + (time.time() - t0)
         sources_done.append(pharmacy)
         summary()
 
@@ -134,6 +136,11 @@ async def run_search(req: SearchRequest, em: Emitter):
         generics = asyncio.create_task(run_generics())
         await run_pharmeasy()
         await asyncio.gather(*agents, generics)
+        try:
+            em.cost = local_cost(em)
+            em.emit("cost", em.cost)
+        except Exception:
+            em.cost = None
         summary(final=True)
     except Exception as e:
         em.emit("error", {"pharmacy": None, "message": str(e)[:200]})
@@ -187,6 +194,8 @@ async def run_replay(em: Emitter, path: str):
             await asyncio.sleep(max(0, e["t_ms"] - prev) / 1000 / speed)
             prev = e["t_ms"]
             name, data = e["event"], e["data"]
+            if name == "cost":
+                em.cost = data
             if name == "agent_live_url":
                 continue
             if name in ("search_started", "done"):
@@ -196,7 +205,7 @@ async def run_replay(em: Emitter, path: str):
             elif name == "generic_option":
                 results[("jan_aushadhi", data["salt"])] = {k: v for k, v in data.items() if k != "salt"}
             elif name == "summary":
-                data = build_summary(req, results, data.get("sources_done", []), data.get("final", False))
+                data = {**build_summary(req, results, data.get("sources_done", []), data.get("final", False)), "cost": getattr(em, "cost", None)}
             em.emit(name, data)
     except Exception as ex:
         em.emit("error", {"pharmacy": None, "message": f"replay failed: {ex}"[:200]})
@@ -212,3 +221,13 @@ def start_replay():
     SEARCHES[sid] = em
     em.task = asyncio.create_task(run_replay(em, path))
     return sid
+
+
+def local_cost(em) -> dict:
+    """TinyFish cost from this search's own agent steps + browser time (account rates)."""
+    steps = getattr(em, "steps", 0)
+    minutes = getattr(em, "agent_secs", 0) / 60
+    usd = steps * 0.016 + minutes * 0.002
+    return {"agent_steps": steps, "browser_minutes": round(minutes, 1),
+            "usd": round(usd, 3), "inr": round(usd * config.USD_INR, 1),
+            "note": "Fetch + Search are free; cost is browser agents only"}
