@@ -34,7 +34,7 @@ def build_summary(req, results: dict, sources_done: list, final: bool = False) -
     for m in req.medicines:
         valid = []
         for (pharmacy, salt), prods in results.items():
-            if salt != m.salt or pharmacy == "jan_aushadhi":
+            if salt != m.salt or pharmacy in ("jan_aushadhi", "proof"):
                 continue
             for p in prods:
                 if p.get("salt_match") and p.get("per_unit"):
@@ -81,7 +81,7 @@ def build_summary(req, results: dict, sources_done: list, final: bool = False) -
             else:
                 swap["note"] = f"{m.brand} not listed - showing cheapest same-salt option"
 
-        swap["generic"] = results.get(("jan_aushadhi", m.salt)) if allowed else None; swaps.append(swap)
+        swap["generic"] = results.get(("jan_aushadhi", m.salt)) if allowed else None; swap["proof"] = results.get(("proof", m.salt)) if allowed else None; swaps.append(swap)
 
     monthly_total = tot_cur - tot_opt
     return {
