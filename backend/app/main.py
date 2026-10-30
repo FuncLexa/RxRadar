@@ -25,7 +25,7 @@ def health():
 
 @app.post("/api/search")
 async def start_search(req: SearchRequest):
-    return {"search_id": orchestrator.start(req)}
+    sid = orchestrator.start_replay() if req.mode == "replay" else orchestrator.start(req); return {"search_id": sid}
 
 
 @app.get("/api/search/{search_id}/stream")
@@ -42,3 +42,11 @@ async def stream(search_id: str):
                 break
 
     return EventSourceResponse(gen())
+
+
+@app.get("/api/replay/latest")
+async def replay_latest():
+    sid = orchestrator.start_replay()
+    if sid is None:
+        raise HTTPException(status_code=404, detail="no saved live run yet")
+    return {"search_id": sid}

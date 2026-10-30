@@ -143,3 +143,65 @@ def _trim(prods: list, brand: str = "") -> list:
             keep.append(p)
     bad = [p for p in prods if not p["salt_match"]]
     return keep + bad[:2]
+
+
+# ---------------- Replay (stage safety net, zero TinyFish calls) ----------------
+
+def _pick_replay_file():
+    import glob
+    want = os.getenv("REPLAY_ID")
+    if want:
+        p = os.path.join(config.CACHE_DIR, f"{want}.json")
+        return p if os.path.exists(p) else None
+    files = sorted(glob.glob(os.path.join(config.CACHE_DIR, "srch_*.json")),
+                   key=os.path.getmtime, reverse=True)
+    for f in files:
+        if "replay" in os.path.basename(f):
+            continue
+        try:
+            ev = json.load(open(f, encoding="utf-8"))["events"]
+        except Exception:
+            continue
+        done = any(e["event"] == "done" for e in ev)
+        agent_hit = any(e["event"] == "price_result" and e["data"]["pharmacy"] != "pharmeasy"
+                        and e["data"]["products"] for e in ev)
+        if done and agent_hit:
+            return f
+    return None
+
+
+async def run_replay(em: Emitter, path: str):
+    ev = json.load(open(path, encoding="utf-8"))["events"]
+    started = next(e for e in ev if e["event"] == "search_started")
+    req = SearchRequest(pincode="560064", mode="replay", medicines=started["data"]["medicines"])
+    results: dict = {}
+    speed = max(config.REPLAY_SPEED, 0.1)
+    prev = 0
+    try:
+        for e in ev:
+            await asyncio.sleep(max(0, e["t_ms"] - prev) / 1000 / speed)
+            prev = e["t_ms"]
+            name, data = e["event"], e["data"]
+            if name == "agent_live_url":
+                continue  # recorded browser streams are dead after the run
+            if name in ("search_started", "done"):
+                data = {**data, "search_id": em.search_id}
+            elif name == "price_result":
+                results[(data["pharmacy"], data["salt"])] = data["products"]
+            elif name == "summary":
+                data = build_summary(req, results, data.get("sources_done", []), data.get("final", False))
+            em.emit(name, data)
+    except Exception as ex:
+        em.emit("error", {"pharmacy": None, "message": f"replay failed: {ex}"[:200]})
+        em.emit("done", {"search_id": em.search_id, "duration_ms": prev})
+
+
+def start_replay():
+    path = _pick_replay_file()
+    if not path:
+        return None
+    sid = "srch_replay_" + uuid.uuid4().hex[:4]
+    em = Emitter(sid)
+    SEARCHES[sid] = em
+    em.task = asyncio.create_task(run_replay(em, path))
+    return sid

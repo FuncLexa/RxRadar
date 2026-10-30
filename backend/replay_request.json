@@ -1,0 +1,9 @@
+{
+  "pincode": "560064",
+  "mode": "replay",
+  "medicines": [
+    { "brand": "Jalra M", "salt": "vildagliptin+metformin", "strength": "50mg/500mg", "per_day": 2, "hero": true },
+    { "brand": "Novastat 10", "salt": "rosuvastatin", "strength": "10mg", "per_day": 1 },
+    { "brand": "Thyronorm 50", "salt": "levothyroxine", "strength": "50mcg", "per_day": 1 }
+  ]
+}
