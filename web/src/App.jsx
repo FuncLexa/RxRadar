@@ -104,7 +104,7 @@ export default function App() {
           setResults(prev => { recordRun(d, prev); return prev })
         }
 
-        const top = d.swaps?.find(s => s.allowed && s.saving_per_year > 0)
+        const top = d.swaps?.find(s => s.allowed && s.annual_saving > 0)
         const topPharmacy = top?.cheapest?.pharmacy || top?.pharmacy || null
         if (topPharmacy && topPharmacy !== lastCheapestRef.current) {
           const name = PHARMACY_NAMES[topPharmacy] || topPharmacy

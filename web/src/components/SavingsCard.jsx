@@ -15,11 +15,29 @@ const PHARMACY_META = {
 export default function SavingsCard({ summary, onMonitor }) {
   if (!summary) return <EmptySavings />
 
-  const { final, sources_done = [], totals, swaps = [], coverage } = summary
+  const { final, sources_done = [], totals, swaps = [], flags = [], coverage } = summary
   const agentsLeft = 3 - sources_done.length
 
   const annual    = useCountUp(totals?.annual_saving  ?? 0)
   const monthly   = useCountUp(totals?.monthly_saving ?? 0)
+
+  // Build a per-salt flag lookup for NTI rows
+  const flagMap = useMemo(() => {
+    const m = {}
+    ;(flags || []).forEach(f => { m[f.salt] = f })
+    return m
+  }, [flags])
+
+  // Render coverage: backend sends an object like {pharmeasy:"all","1mg":"hero_only",...}
+  const coverageText = useMemo(() => {
+    if (!coverage) return null
+    if (typeof coverage === 'string') return coverage
+    const parts = Object.entries(coverage).map(([ph, scope]) => {
+      const meta = PHARMACY_META[ph]
+      return `${meta ? meta.name : ph} (${scope.replace('_', ' ')})`
+    })
+    return parts.join(' · ')
+  }, [coverage])
 
   return (
     <div className="relative">
@@ -78,7 +96,7 @@ export default function SavingsCard({ summary, onMonitor }) {
             <span className="text-[11px] text-ink-faint">{swaps.length} {swaps.length === 1 ? 'swap' : 'swaps'}</span>
           </div>
           <div className="divide-y divide-line">
-            {swaps.map((s, i) => <SwapRow key={i} swap={s} />)}
+            {swaps.map((s, i) => <SwapRow key={i} swap={s} flagMap={flagMap} />)}
           </div>
         </div>
 
@@ -97,10 +115,10 @@ export default function SavingsCard({ summary, onMonitor }) {
         )}
 
         {/* coverage */}
-        {coverage && (
+        {coverageText && (
           <p className="mt-4 text-xs text-ink-faint">
             <Sparkles size={11} className="inline -mt-0.5 mr-1 text-primary" />
-            {coverage}
+            {coverageText}
           </p>
         )}
 
@@ -115,38 +133,53 @@ export default function SavingsCard({ summary, onMonitor }) {
 
 /* ---------- swap row ---------- */
 
-function SwapRow({ swap }) {
-  const { allowed, current, cheapest, pharmacy, saving_per_year, flags } = swap
+function SwapRow({ swap, flagMap }) {
+  // Backend contract fields: annual_saving, monthly_saving, cheapest.pharmacy, current, cheapest, note, allowed, salt
+  const { allowed, current, cheapest, annual_saving = 0, note, salt } = swap
+  const pharmacy = cheapest?.pharmacy || null
 
-  if (!allowed) return <NtiRow swap={swap} />
+  if (!allowed) {
+    const flag = flagMap?.[salt]
+    return <NtiRow swap={swap} flag={flag} />
+  }
 
-  const saving = useCountUp(saving_per_year ?? 0)
+  const saving = useCountUp(annual_saving)
   const meta = PHARMACY_META[pharmacy]
 
   return (
-    <div className="px-4 py-3 flex items-center gap-3">
-      <span className={`h-2 w-2 rounded-full shrink-0 ${meta?.dot || 'bg-ink-faint'}`} />
+    <div className="px-4 py-3 flex items-start gap-3">
+      <span className={`h-2 w-2 rounded-full shrink-0 mt-1.5 ${meta?.dot || 'bg-ink-faint'}`} />
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-1.5 text-[14px] font-semibold text-ink flex-wrap">
-          <span className="truncate">{current?.name}</span>
-          <span className="num text-xs font-medium text-ink-faint">₹{current?.per_unit?.toFixed(2)}</span>
-          <ArrowRight size={13} className="text-primary shrink-0" strokeWidth={2.5} />
-          <span className="truncate text-primary">{cheapest?.name}</span>
-          <span className="num text-xs font-medium text-ink-faint">₹{cheapest?.per_unit?.toFixed(2)}</span>
-        </div>
-        <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-ink-faint flex-wrap">
-          {meta && (
-            <span className="inline-flex items-center gap-1">
-              <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
-              {meta.name}
-            </span>
-          )}
-          <span>·</span>
-          <span className="inline-flex items-center gap-0.5 text-success font-semibold">
-            <Check size={10} strokeWidth={3} /> same salt
-          </span>
-        </div>
+        {note ? (
+          <div className="text-[13px] text-ink-soft italic">{note}</div>
+        ) : (
+          <>
+            <div className="flex items-center gap-1.5 text-[14px] font-semibold text-ink flex-wrap">
+              <span className="truncate">{current?.name || '—'}</span>
+              {current?.per_unit != null && (
+                <span className="num text-xs font-medium text-ink-faint">₹{current.per_unit.toFixed(2)}</span>
+              )}
+              <ArrowRight size={13} className="text-primary shrink-0" strokeWidth={2.5} />
+              <span className="truncate text-primary">{cheapest?.name || '—'}</span>
+              {cheapest?.per_unit != null && (
+                <span className="num text-xs font-medium text-ink-faint">₹{cheapest.per_unit.toFixed(2)}</span>
+              )}
+            </div>
+            <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-ink-faint flex-wrap">
+              {meta && (
+                <span className="inline-flex items-center gap-1">
+                  <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+                  {meta.name}
+                </span>
+              )}
+              <span>·</span>
+              <span className="inline-flex items-center gap-0.5 text-success font-semibold">
+                <Check size={10} strokeWidth={3} /> same salt
+              </span>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="text-right shrink-0">
@@ -159,9 +192,9 @@ function SwapRow({ swap }) {
   )
 }
 
-function NtiRow({ swap }) {
-  const { current, flags } = swap
-  const message = flags?.[0] || 'Not switched'
+function NtiRow({ swap, flag }) {
+  const { current } = swap
+  const message = flag?.message || 'Narrow therapeutic index — consult your doctor before switching.'
   return (
     <div className="px-4 py-3 bg-highlight/15 border-l-[3px] border-highlight flex items-start gap-2.5">
       <div className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-highlight/40 text-highlight-ink mt-0.5">

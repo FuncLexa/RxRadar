@@ -26,7 +26,11 @@ def health():
 
 @app.post("/api/search")
 async def start_search(req: SearchRequest):
-    sid = orchestrator.start_replay() if req.mode == "replay" else orchestrator.start(req); return {"search_id": sid}
+    if req.mode == "replay":
+        sid = orchestrator.start_replay()
+    else:
+        sid = orchestrator.start(req)
+    return {"search_id": sid}
 
 
 @app.get("/api/search/{search_id}/stream")

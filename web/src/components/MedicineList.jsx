@@ -1,8 +1,27 @@
 import React from 'react'
-import { useState } from 'react'
-import { Plus, X, Minus, Target, Pencil } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Plus, X, Minus, Target, Pencil, ChevronDown } from 'lucide-react'
+import { fetchPresets } from '../lib/stream'
+
+// Singleton preset cache — loaded once and reused
+let _presetsCache = null
+let _presetsPromise = null
+function loadPresets() {
+  if (_presetsCache) return Promise.resolve(_presetsCache)
+  if (_presetsPromise) return _presetsPromise
+  _presetsPromise = fetchPresets()
+    .then(p => { _presetsCache = p; return p })
+    .catch(() => [])
+  return _presetsPromise
+}
 
 export default function MedicineList({ medicines, heroId, setHeroId, updateMed, removeMed, addMed, locked }) {
+  const [presets, setPresets] = useState([])
+
+  useEffect(() => {
+    loadPresets().then(p => setPresets(p || []))
+  }, [])
+
   return (
     <div className="divide-y divide-line">
       {medicines.map((m, i) => (
@@ -15,6 +34,7 @@ export default function MedicineList({ medicines, heroId, setHeroId, updateMed, 
           onHero={() => setHeroId(i)}
           onChange={(patch) => updateMed(i, patch)}
           onRemove={() => removeMed(i)}
+          presets={presets}
         />
       ))}
 
@@ -33,9 +53,29 @@ export default function MedicineList({ medicines, heroId, setHeroId, updateMed, 
   )
 }
 
-function Row({ med, isHero, canRemove, locked, onHero, onChange, onRemove }) {
+function Row({ med, isHero, canRemove, locked, onHero, onChange, onRemove, presets }) {
   const [editing, setEditing] = useState(false)
+  const [showPresets, setShowPresets] = useState(false)
+  const dropRef = useRef(null)
   const showInputs = editing && !locked
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!showPresets) return
+    const handler = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) {
+        setShowPresets(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [showPresets])
+
+  const applyPreset = (preset) => {
+    onChange({ brand: preset.brand, salt: preset.salt, strength: preset.strength })
+    setShowPresets(false)
+    setEditing(false)
+  }
 
   return (
     <div className={`group relative flex items-center gap-4 px-5 py-4 transition ${isHero ? 'bg-primary/[0.04]' : 'hover:bg-ink/[0.015]'}`}>
@@ -60,28 +100,59 @@ function Row({ med, isHero, canRemove, locked, onHero, onChange, onRemove }) {
       <div className="min-w-0 flex-1">
         {showInputs ? (
           <div className="space-y-1">
-            <input
-              autoFocus
-              className="inline-input text-[17px] font-semibold"
-              value={med.brand}
-              onChange={(e) => onChange({ brand: e.target.value })}
-              onBlur={() => setEditing(false)}
-              onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
-              placeholder="Brand name"
-            />
+            <div className="flex items-center gap-2" ref={dropRef}>
+              <input
+                autoFocus
+                className="inline-input text-[17px] font-semibold flex-1 min-w-0"
+                value={med.brand}
+                onChange={(e) => onChange({ brand: e.target.value })}
+                onBlur={() => !showPresets && setEditing(false)}
+                onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
+                placeholder="Brand name"
+              />
+              {presets.length > 0 && (
+                <div className="relative">
+                  <button
+                    type="button"
+                    onMouseDown={(e) => { e.preventDefault(); setShowPresets(v => !v) }}
+                    className="flex items-center gap-0.5 rounded-md bg-white/70 ring-1 ring-line px-2 py-1 text-[11px] text-ink-faint hover:text-ink hover:ring-line-strong transition"
+                    title="Pick a common medicine"
+                  >
+                    Presets <ChevronDown size={10} />
+                  </button>
+                  {showPresets && (
+                    <div className="absolute right-0 top-full mt-1 z-30 w-[240px] frost-shell overflow-hidden shadow-glass border border-line">
+                      <div className="py-1 max-h-[260px] overflow-y-auto divide-y divide-line">
+                        {presets.map((p, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onMouseDown={() => applyPreset(p)}
+                            className="w-full text-left px-3 py-2 hover:bg-primary/[0.05] transition"
+                          >
+                            <div className="text-[13px] font-semibold text-ink">{p.brand}</div>
+                            <div className="text-[11px] text-ink-faint">{p.salt} · {p.strength}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <input
                 className="inline-input text-xs text-ink-soft max-w-[180px]"
                 value={med.salt}
                 onChange={(e) => onChange({ salt: e.target.value })}
-                placeholder="Salt"
+                placeholder="Salt (e.g. rosuvastatin)"
               />
               <span className="text-ink-faint">·</span>
               <input
                 className="inline-input text-xs text-ink-soft max-w-[120px]"
                 value={med.strength}
                 onChange={(e) => onChange({ strength: e.target.value })}
-                placeholder="Strength"
+                placeholder="Strength (e.g. 10mg)"
               />
             </div>
           </div>

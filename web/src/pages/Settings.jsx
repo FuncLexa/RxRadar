@@ -6,10 +6,12 @@ import {
 } from 'lucide-react'
 import SectionHead from '../components/SectionHead'
 import { getHistory, listPrescriptions, listReminders } from '../lib/storage'
+import { API_BASE } from '../lib/stream'
 
 export default function Settings({ mode, setMode, speed, setSpeed, onWipeAll, pushToast }) {
   const [stats, setStats] = useState({ runs: 0, prescriptions: 0, reminders: 0 })
   const [confirmWipe, setConfirmWipe] = useState(false)
+  const [backendStatus, setBackendStatus] = useState(null) // null | 'ok' | 'error'
 
   useEffect(() => {
     setStats({
@@ -19,12 +21,28 @@ export default function Settings({ mode, setMode, speed, setSpeed, onWipeAll, pu
     })
   }, [confirmWipe])
 
+  // Health-check the backend to show correct Live mode status
+  useEffect(() => {
+    let cancelled = false
+    fetch(`${API_BASE}/api/health`)
+      .then(r => r.json())
+      .then(d => { if (!cancelled) setBackendStatus(d?.ok ? 'ok' : 'error') })
+      .catch(() => { if (!cancelled) setBackendStatus('error') })
+    return () => { cancelled = true }
+  }, [])
+
   const wipe = () => {
     onWipeAll()
     setConfirmWipe(false)
     pushToast?.({ message: 'All local data cleared' })
     setStats({ runs: 0, prescriptions: 0, reminders: 0 })
   }
+
+  const liveTag = backendStatus === 'ok'
+    ? 'Backend connected ✓'
+    : backendStatus === 'error'
+      ? 'Backend not reachable'
+      : 'Checking backend…'
 
   return (
     <div className="space-y-8">
@@ -53,8 +71,8 @@ export default function Settings({ mode, setMode, speed, setSpeed, onWipeAll, pu
             onClick={() => setMode('live')}
             label="Live"
             desc="Streams from a real TinyFish backend. Requires a configured endpoint."
-            tag="Backend not connected"
-            disabled
+            tag={liveTag}
+            disabled={backendStatus === 'error'}
           />
         </div>
       </SettingsGroup>
@@ -111,7 +129,7 @@ export default function Settings({ mode, setMode, speed, setSpeed, onWipeAll, pu
       >
         <dl className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-x-4 gap-y-2 text-sm">
           <dt className="text-ink-faint text-xs font-semibold uppercase tracking-wider pt-0.5">Version</dt>
-          <dd className="text-ink">Path A · replay mode</dd>
+          <dd className="text-ink">v1 · {backendStatus === 'ok' ? 'Live + Replay' : 'Replay mode'}</dd>
           <dt className="text-ink-faint text-xs font-semibold uppercase tracking-wider pt-0.5">Agents</dt>
           <dd className="text-ink">PharmEasy (fetch) · 1mg (browser) · Apollo (browser)</dd>
           <dt className="text-ink-faint text-xs font-semibold uppercase tracking-wider pt-0.5">Not included</dt>
