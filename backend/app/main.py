@@ -50,3 +50,30 @@ async def replay_latest():
     if sid is None:
         raise HTTPException(status_code=404, detail="no saved live run yet")
     return {"search_id": sid}
+
+
+from urllib.parse import quote as _q
+
+from app.models import MonitorRequest
+from app.tinyfish_client import create_fetch_monitor
+
+
+@app.post("/api/monitor")
+async def create_monitor(body: MonitorRequest):
+    """Daily TinyFish fetch monitor on the PharmEasy search page for this salt."""
+    em = orchestrator.SEARCHES.get(body.search_id)
+    query = body.salt.replace("+", " ")
+    if em is not None:
+        for e in em.log:
+            if e["event"] == "search_started":
+                for m in e["data"]["medicines"]:
+                    if m["salt"] == body.salt:
+                        query = m["brand"]
+    url = f"https://pharmeasy.in/search/all?name={_q(query)}"
+    try:
+        mid = await create_fetch_monitor(
+            url, purpose=f"Alert when {body.salt} drops below Rs {body.target_per_unit}/tablet"
+        )
+    except Exception as ex:
+        raise HTTPException(status_code=502, detail=str(ex)[:200])
+    return {"monitor_id": str(mid), "schedule": "daily 9:00 AM", "status": "active"}
