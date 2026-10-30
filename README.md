@@ -1,87 +1,145 @@
-﻿# RxRadar
+﻿<div align="center">
 
-**Same medicine. Up to 88% cheaper. Found by live web agents.**
+# 💊 RxRadar
 
-Built for *Swim with TinyFish* (Presidency University, 30 Oct 2026) by **Team FuncLexa**.
+### Same medicine. Up to 88% cheaper. Found by live web agents.
 
-## The problem
+![TinyFish](https://img.shields.io/badge/Powered%20by-TinyFish%20Web%20Agents-0A66C2?style=for-the-badge)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Python](https://img.shields.io/badge/Python%203.14-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
-Indian families refill chronic medicines (diabetes, cholesterol, thyroid) every month and overpay because:
+**Swim with TinyFish · Presidency University · 30 Oct 2026 · Team FuncLexa**
 
-- The same salt at the same strength is sold under dozens of brands at very different prices.
-- The **same brand** costs different amounts on different apps.
-- No pharmacy offers a public price API, and comparing 5 medicines across 4 apps by hand means 20 searches every month.
+</div>
 
-## Real numbers (live TinyFish runs, Bengaluru, 29–30 Oct 2026)
+---
 
-| Finding | Data |
-|---|---|
-| Same brand, different app | Jalra M 50/500: ₹15.88/tab on PharmEasy vs ₹21.73 on Apollo (+37%) |
-| Same salt, same strength, same app | Jalra M ₹15.88 vs Somglip M ₹6.59/tab (−58%) |
-| Government generic | Vildagliptin + Metformin 50/500 at Jan Aushadhi: ₹1.88/tab (−88%) |
-| Statin | Novastat 10: ₹18.61 → Roseday 10: ₹11.18 online, ₹1.13 at Jan Aushadhi |
-| Demo patient (3 medicines) | **₹9,363.60/year** saved online, before the Jan Aushadhi option |
+<div align="center">
 
-## How TinyFish powers it
+## ₹9,363 / year
 
-TinyFish isn't a feature of RxRadar. It's the engine: **4 TinyFish APIs, each doing a real job.**
+**saved for one patient on 3 chronic medicines, found by live TinyFish agents in under 3 minutes**
 
-| TinyFish API | What it does in RxRadar |
-|---|---|
-| **Agent** (browser automation, stealth + India proxy, live stream) | Searches 1mg and Apollo like a human, closes popups, waits for results, returns structured prices |
-| **Fetch** | Prices every medicine on PharmEasy in seconds, many search URLs in parallel |
-| **Search** | Finds the Jan Aushadhi government generic price for each salt |
-| **Monitor** | Daily refill price alert on the chosen medicine |
+*…and up to 94% cheaper again at Jan Aushadhi government stores*
 
-## Architecture
+</div>
+
+---
+
+## 🩺 The problem
+
+Indian families refill chronic medicines every month (diabetes, cholesterol, thyroid) and quietly overpay.
+
+- 🔁 **The same salt at the same strength** is sold under dozens of brands at very different prices
+- 📱 **The same brand** costs different amounts on different pharmacy apps
+- 🔒 **No pharmacy has a public price API.** Comparing 5 medicines across 4 apps by hand means **20 searches, every month**
+
+So nobody compares, and everybody overpays.
+
+---
+
+## 📊 What our agents found (live runs, Bengaluru, 29–30 Oct 2026)
+
+| | Finding | Price per tablet |
+|:-:|---|---|
+| 🏷️ | **Same brand, different app:** Jalra M 50/500 | PharmEasy **₹15.88** vs Apollo **₹21.73** · *+37%* |
+| ⚖️ | **Same salt, same app:** Jalra M vs Somglip M | **₹15.88 → ₹6.59** · *−58%* |
+| 🏛️ | **Government generic:** Vildagliptin + Metformin 50/500 | Jan Aushadhi **₹1.88** · *−88%* |
+| 💙 | **Statin:** Novastat 10 → Roseday 10 | **₹18.61 → ₹11.18** online · **₹1.13** Jan Aushadhi |
+
+---
+
+## 🐟 TinyFish is the engine, not a feature
+
+RxRadar uses **4 TinyFish APIs**, each doing a real job:
+
+| | TinyFish API | What it does |
+|:-:|---|---|
+| 🤖 | **Agent** | Browses 1mg and Apollo like a human: stealth mode, India proxy, closes popups, waits for results, returns structured prices, **streams the live browser** |
+| ⚡ | **Fetch** | Prices every medicine on PharmEasy in seconds, many searches in parallel |
+| 🔎 | **Search** | Finds the **Jan Aushadhi** government generic price for each salt |
+| 🔔 | **Monitor** | Daily refill price alert on the medicine you choose |
+
+---
+
+## 🏗️ Architecture
 
 ```mermaid
-flowchart TD
-    UI[React UI: live agent grid + savings] -->|POST /api/search| API[FastAPI]
-    API --> ORC[Orchestrator: parallel async, SSE stream]
-    ORC --> F[TinyFish Fetch: PharmEasy, all medicines]
-    ORC --> A1[TinyFish Agent: 1mg]
-    ORC --> A2[TinyFish Agent: Apollo]
-    ORC --> S[TinyFish Search: Jan Aushadhi]
-    F & A1 & A2 & S --> V[Salt validator: same salt + strength only]
-    V --> O[Optimiser: savings, NTI flags]
+flowchart LR
+    UI["🖥️ React UI<br/>live agent grid + savings"] -->|POST /api/search| API["⚙️ FastAPI"]
+    API --> ORC["🧠 Orchestrator<br/>parallel async + SSE"]
+    ORC --> F["⚡ TinyFish Fetch<br/>PharmEasy"]
+    ORC --> A1["🤖 TinyFish Agent<br/>1mg"]
+    ORC --> A2["🤖 TinyFish Agent<br/>Apollo"]
+    ORC --> S["🔎 TinyFish Search<br/>Jan Aushadhi"]
+    F --> V["🛡️ Salt validator"]
+    A1 --> V
+    A2 --> V
+    S --> V
+    V --> O["📈 Optimiser<br/>savings + NTI flags"]
     O -->|summary after every result| UI
-    UI -->|POST /api/monitor| M[TinyFish Monitor: daily refill alert]
+    UI -->|POST /api/monitor| M["🔔 TinyFish Monitor"]
 ```
 
-**Latency design:** PharmEasy answers in seconds, so the first savings number appears almost immediately. The browser agents then refine it live. A `summary` event is sent after every result, never only at the end.
+> [!TIP]
+> **Built for latency.** PharmEasy answers in seconds, so the first savings number is on screen almost immediately. The browser agents then **refine it live**: a fresh summary goes out after *every* result, never only at the end.
 
-**Replay mode:** every live run is saved and can be replayed with the original timing and zero TinyFish calls, as a stage-safe fallback.
+> [!NOTE]
+> **Replay mode.** Every live run is saved and can be replayed with the original timing and **zero TinyFish calls**. It's a stage-safe fallback that behaves identically in the UI.
 
-## Safety by design
+---
 
-- **Same salt, same strength only.** Combos (CV, EZ, TG, F, A/Aspirin) and wrong strengths are rejected visibly.
-- **Unknown brands are rejected, never guessed.**
-- **Narrow-therapeutic-index drugs** (e.g. levothyroxine) are flagged and never switched.
-- RxRadar **never auto-purchases**. Every swap says to confirm with your pharmacist.
+## 🛡️ Safe by design
 
-## Cost
+| | Rule |
+|:-:|---|
+| ✅ | **Same salt, same strength only.** Combos (CV, EZ, TG, F, Aspirin) and wrong strengths are rejected, visibly |
+| 🚫 | **Unknown brands are rejected, never guessed** |
+| ⚠️ | **Narrow-therapeutic-index drugs** (e.g. levothyroxine) are flagged and **never switched** |
+| 🛒 | **Never auto-purchases.** Every swap says to confirm with your pharmacist |
 
-PharmEasy Fetch and Search are free. Only browser agents are billed (per step and per browser-minute). Each search reports its own TinyFish cost in the final summary.
+---
 
-## Run it
+## 💸 What a search costs
+
+PharmEasy **Fetch** and **Search** are free. Only browser agents are billed, per step and per browser-minute, and **every search reports its own TinyFish cost** in the final summary. That's a few rupees spent to save thousands a year.
+
+---
+
+<details>
+<summary><b>🚀 Run it locally</b></summary>
 
 ```bash
-# backend
+# Backend
 cd backend
-python -m venv .venv && .venv\Scripts\activate
+python -m venv .venv
+.venv\Scripts\activate
 python -m pip install -r requirements.txt
-copy .env.example .env   # add TINYFISH_API_KEY
+copy .env.example .env        # add your TINYFISH_API_KEY
 uvicorn app.main:app --reload --port 8000
 
-# frontend
+# Frontend
 cd web
-npm install && npm run dev
+npm install
+npm run dev
 ```
 
-API contract: [`rxradar_api_contract.md`](rxradar_api_contract.md)
+Full API spec: [`rxradar_api_contract.md`](rxradar_api_contract.md)
 
-## Team FuncLexa
+</details>
 
-- **Mohammad Adnan Shakil**: agents, orchestration, validation, optimiser (backend)
-- **Sultan**: live agent grid, savings UI, integration (frontend)
+---
+
+## 👥 Team FuncLexa
+
+| | Member | Built |
+|:-:|---|---|
+| 🧠 | **Mohammad Adnan Shakil** | TinyFish agents, orchestration, salt validation, optimiser, replay |
+| 🎨 | **Sultan** | Live agent grid, savings UI, frontend integration |
+
+<div align="center">
+
+*Made in 6 hours at Presidency University, Bengaluru 🇮🇳*
+
+</div>
