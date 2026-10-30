@@ -71,7 +71,7 @@ async def run_search(req: SearchRequest, em: Emitter):
 
         try:
             raw = await fn(arg, on_live, on_progress)
-            prods = _trim([check(p, hero.salt, hero.strength) for p in raw])
+            prods = _trim([check(p, hero.salt, hero.strength) for p in raw], hero.brand)
             results[(pharmacy, hero.salt)] = prods
             em.emit("price_result", {"pharmacy": pharmacy, "salt": hero.salt,
                                      "strength": hero.strength, "products": prods})
@@ -90,7 +90,7 @@ async def run_search(req: SearchRequest, em: Emitter):
 
         async def one(m):
             raw = await pharmeasy_multi(pharmeasy_queries(m.brand, m.salt, m.strength, limit=5))
-            prods = _trim([check(p, m.salt, m.strength) for p in raw])
+            prods = _trim([check(p, m.salt, m.strength) for p in raw], m.brand)
             results[("pharmeasy", m.salt)] = prods
             em.emit("price_result", {"pharmacy": "pharmeasy", "salt": m.salt,
                                      "strength": m.strength, "products": prods}); summary()
@@ -125,3 +125,21 @@ def start(req: SearchRequest) -> str:
     SEARCHES[sid] = em
     em.task = asyncio.create_task(run_search(req, em))
     return sid
+
+
+def _brand_key(brand: str) -> str:
+    import re
+    return re.sub(r"[^a-z0-9]", "", re.sub(r"\s*\d.*$", "", brand or "").lower())
+
+
+def _trim(prods: list, brand: str = "") -> list:
+    """Cheapest 6 valid + user's own brand (always) + up to 2 rejected."""
+    import re
+    key = _brand_key(brand)
+    ok = sorted([p for p in prods if p["salt_match"]], key=lambda p: p["per_unit"])
+    keep = ok[:6]
+    for p in ok[6:]:
+        if key and key in re.sub(r"[^a-z0-9]", "", p["name"].lower()):
+            keep.append(p)
+    bad = [p for p in prods if not p["salt_match"]]
+    return keep + bad[:2]
