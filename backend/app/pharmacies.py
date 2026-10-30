@@ -150,3 +150,38 @@ async def apollo(
         url, GOAL_APOLLO, AGENT_SCHEMA_APOLLO, on_live_url, on_progress, max_steps=10
     )
     return _from_agent(result, "composition")
+
+
+async def pharmeasy_multi(queries: list[str]) -> list[dict]:
+    """One free fetch call with several search URLs (brand + salt); merged, de-duplicated."""
+    urls = [f"https://pharmeasy.in/search/all?name={quote(q)}" for q in queries]
+    res = await fetch_markdown(urls)
+    seen, out = set(), []
+    for md in res.values():
+        for p in parse_pharmeasy(md):
+            if p["name"] not in seen:
+                seen.add(p["name"])
+                out.append(p)
+    return out
+
+
+async def pharmeasy_multi(queries: list[str], timeout_ms: int = 8000) -> list[dict]:
+    """Each search URL fetched separately in parallel; slow/stalled URLs are skipped."""
+    import asyncio
+
+    async def one(q: str) -> str:
+        url = f"https://pharmeasy.in/search/all?name={quote(q)}"
+        try:
+            res = await asyncio.wait_for(fetch_markdown([url], timeout_ms), timeout=timeout_ms / 1000 + 2)
+            return next(iter(res.values()), "") if res else ""
+        except Exception:
+            return ""
+
+    pages = await asyncio.gather(*(one(q) for q in queries))
+    seen, out = set(), []
+    for md in pages:
+        for p in parse_pharmeasy(md):
+            if p["name"] not in seen:
+                seen.add(p["name"])
+                out.append(p)
+    return out

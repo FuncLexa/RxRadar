@@ -97,3 +97,18 @@ async def create_fetch_monitor(url: str, purpose: str) -> str:
         purpose=purpose,
     )
     return created.monitor.id
+
+
+# --- Stall protection: fetch sometimes never returns. Hard timeout + 1 retry. ---
+_raw_fetch_markdown = fetch_markdown
+
+
+async def fetch_markdown(urls: list[str], timeout_ms: int = 15000) -> dict[str, str]:
+    for _ in range(2):
+        try:
+            return await asyncio.wait_for(
+                _raw_fetch_markdown(urls, timeout_ms), timeout=timeout_ms / 1000 + 5
+            )
+        except asyncio.TimeoutError:
+            continue
+    return {}
