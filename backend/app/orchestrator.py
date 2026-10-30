@@ -1,10 +1,13 @@
 import asyncio
+import glob
 import json
 import os
+import re
 import time
 import uuid
 
 from app import config
+from app.generics import jan_aushadhi
 from app.models import SearchRequest
 from app.optimiser import build_summary
 from app.pharmacies import apollo, onemg, pharmeasy_multi
@@ -35,11 +38,21 @@ class Emitter:
             json.dump({"search_id": self.search_id, "events": self.log}, f, ensure_ascii=False, indent=1)
 
 
-def _trim(prods: list) -> list:
-    """Cheapest valid first (max 6), then up to 2 rejected to show the validator working."""
+def _k(s: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", (s or "").lower())
+
+
+def _brand_key(brand: str) -> str:
+    return _k(re.sub(r"\s*\d.*$", "", brand or ""))
+
+
+def _trim(prods: list, brand: str = "") -> list:
+    """Cheapest 6 valid + the user's own brand (always) + up to 2 rejected."""
+    key = _brand_key(brand)
     ok = sorted([p for p in prods if p["salt_match"]], key=lambda p: p["per_unit"])
+    keep = ok[:6] + [p for p in ok[6:] if key and key in _k(p["name"])]
     bad = [p for p in prods if not p["salt_match"]]
-    return ok[:6] + bad[:2]
+    return keep + bad[:2]
 
 
 async def run_search(req: SearchRequest, em: Emitter):
@@ -93,23 +106,34 @@ async def run_search(req: SearchRequest, em: Emitter):
             prods = _trim([check(p, m.salt, m.strength) for p in raw], m.brand)
             results[("pharmeasy", m.salt)] = prods
             em.emit("price_result", {"pharmacy": "pharmeasy", "salt": m.salt,
-                                     "strength": m.strength, "products": prods}); summary()
+                                     "strength": m.strength, "products": prods})
+            summary()
 
         await asyncio.gather(*(one(m) for m in meds), return_exceptions=True)
         status("pharmeasy", "done", f"{len(meds)} medicines priced", t0)
         sources_done.append("pharmeasy")
         summary()
 
+    async def run_generics():
+        async def one(m):
+            g = await jan_aushadhi(m.salt, m.strength)
+            if g:
+                results[("jan_aushadhi", m.salt)] = g
+                em.emit("generic_option", {"salt": m.salt, **g})
+
+        await asyncio.gather(*(one(m) for m in meds), return_exceptions=True)
+        summary()
+
     try:
         em.emit("search_started", {"search_id": em.search_id, "pharmacies": PHARMACIES,
                                    "medicines": [m.model_dump() for m in meds]})
-        # Slow agents first, then the fast fetch, all concurrently
         agents = [
             asyncio.create_task(run_agent("1mg", onemg, hero.salt)),
             asyncio.create_task(run_agent("apollo", apollo, hero.brand)),
         ]
+        generics = asyncio.create_task(run_generics())
         await run_pharmeasy()
-        await asyncio.gather(*agents)
+        await asyncio.gather(*agents, generics)
         summary(final=True)
     except Exception as e:
         em.emit("error", {"pharmacy": None, "message": str(e)[:200]})
@@ -127,28 +151,9 @@ def start(req: SearchRequest) -> str:
     return sid
 
 
-def _brand_key(brand: str) -> str:
-    import re
-    return re.sub(r"[^a-z0-9]", "", re.sub(r"\s*\d.*$", "", brand or "").lower())
-
-
-def _trim(prods: list, brand: str = "") -> list:
-    """Cheapest 6 valid + user's own brand (always) + up to 2 rejected."""
-    import re
-    key = _brand_key(brand)
-    ok = sorted([p for p in prods if p["salt_match"]], key=lambda p: p["per_unit"])
-    keep = ok[:6]
-    for p in ok[6:]:
-        if key and key in re.sub(r"[^a-z0-9]", "", p["name"].lower()):
-            keep.append(p)
-    bad = [p for p in prods if not p["salt_match"]]
-    return keep + bad[:2]
-
-
 # ---------------- Replay (stage safety net, zero TinyFish calls) ----------------
 
 def _pick_replay_file():
-    import glob
     want = os.getenv("REPLAY_ID")
     if want:
         p = os.path.join(config.CACHE_DIR, f"{want}.json")
@@ -183,11 +188,13 @@ async def run_replay(em: Emitter, path: str):
             prev = e["t_ms"]
             name, data = e["event"], e["data"]
             if name == "agent_live_url":
-                continue  # recorded browser streams are dead after the run
+                continue
             if name in ("search_started", "done"):
                 data = {**data, "search_id": em.search_id}
             elif name == "price_result":
                 results[(data["pharmacy"], data["salt"])] = data["products"]
+            elif name == "generic_option":
+                results[("jan_aushadhi", data["salt"])] = {k: v for k, v in data.items() if k != "salt"}
             elif name == "summary":
                 data = build_summary(req, results, data.get("sources_done", []), data.get("final", False))
             em.emit(name, data)

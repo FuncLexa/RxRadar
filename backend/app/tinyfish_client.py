@@ -112,3 +112,23 @@ async def fetch_markdown(urls: list[str], timeout_ms: int = 15000) -> dict[str, 
         except asyncio.TimeoutError:
             continue
     return {}
+
+
+async def web_search(query: str, timeout_s: int = 10) -> list[dict]:
+    """TinyFish Search (free). Returns [{title, snippet, url, site}]."""
+    resp = None
+    for kwargs in ({"location": "IN", "language": "en"}, {}):
+        try:
+            resp = await asyncio.wait_for(client().search.query(query, **kwargs), timeout=timeout_s)
+            break
+        except Exception:
+            continue
+    out = []
+    for r in (getattr(resp, "results", None) or []):
+        out.append({
+            "title": getattr(r, "title", "") or "",
+            "snippet": getattr(r, "snippet", "") or "",
+            "url": getattr(r, "url", "") or "",
+            "site": getattr(r, "site_name", "") or "",
+        })
+    return out
