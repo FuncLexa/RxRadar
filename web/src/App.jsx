@@ -1,15 +1,16 @@
-import { useCallback, useMemo, useState, useEffect, useRef } from 'react'
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { Ambient, Header } from './components/Shell'
 import LeftRail from './components/LeftRail'
 import Dashboard from './pages/Dashboard'
 import Compare from './pages/Compare'
 import Savings from './pages/Savings'
 import Saved from './pages/Saved'
+import Settings from './pages/Settings'
 import OCRUpload from './components/OCRUpload'
 import SectionHead from './components/SectionHead'
 import { ToastStack, useToast } from './components/Toast'
 import { startSearch, stopSearch } from './lib/stream'
-import { savePrescription, addReminder, recordRun } from './lib/storage'
+import { savePrescription, addReminder, recordRun, wipeAll } from './lib/storage'
 
 const DEFAULT_PINCODE = '560064'
 const PHARMACY_NAMES = { pharmeasy: 'PharmEasy', '1mg': '1mg', apollo: 'Apollo' }
@@ -189,9 +190,17 @@ export default function App() {
                 onOCRImport={onOCRImport}
               />
             )}
-            {page === 'compare' && <Compare results={results} summary={summary} />}
+            {page === 'compare' && <Compare results={results} summary={summary} onNavigate={setPage} />}
             {page === 'savings' && <Savings summary={summary} onMonitor={onMonitor} />}
             {page === 'saved'   && <Saved onRestorePrescription={onRestorePrescription} />}
+            {page === 'settings' && (
+              <Settings
+                mode={mode} setMode={setMode}
+                speed={speed} setSpeed={setSpeed}
+                onWipeAll={() => wipeAll()}
+                pushToast={push}
+              />
+            )}
             {page === 'scan' && (
               <div>
                 <SectionHead

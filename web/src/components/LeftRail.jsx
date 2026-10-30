@@ -54,7 +54,12 @@ export default function LeftRail({ active, onNavigate, collapsed, setCollapsed }
 
         {/* footer */}
         <div className="p-2 border-t border-line space-y-0.5">
-          <button className="rail-item w-full" title="Settings">
+          <button
+            onClick={() => onNavigate('settings')}
+            data-active={active === 'settings'}
+            className="rail-item w-full"
+            title="Settings"
+          >
             <Settings size={16} strokeWidth={2.2} />
             {!collapsed && <span>Settings</span>}
           </button>

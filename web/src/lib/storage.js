@@ -83,3 +83,10 @@ export function toggleReminder(id) {
 export function deleteReminder(id) {
   write('reminders', listReminders().filter(r => r.id !== id))
 }
+
+export function wipeAll() {
+  ['prescriptions', 'history', 'reminders'].forEach(k => {
+    try { localStorage.removeItem(`${NS}:${k}`) } catch {}
+  })
+}
+
