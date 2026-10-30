@@ -1,60 +1,136 @@
 import mockData from '../../rxradar_mock_events.json'
 
-// Expose mock data on window for default state initialization as designed
 if (typeof window !== 'undefined') {
   window.__RX_MOCK__ = mockData
 }
 
+export const API_BASE =
+  (typeof window !== 'undefined' && window.__RX_API__) || 'http://localhost:8000'
+
+const EVENTS = [
+  'search_started', 'agent_status', 'agent_live_url', 'price_result',
+  'generic_option', 'summary', 'cost', 'proof', 'error', 'done',
+]
+
 let activeRun = null
 
 /**
- * startSearch
- * @param {object} request  - { pincode, medicines: [{brand, salt, strength, per_day, hero}] }
- * @param {object} handlers - map of eventName -> (data) => void
- * @param {object} opts     - { mode: 'replay' | 'live', speed: 1 | 3 }
- * @returns {{ cancel: () => void }}
+ * startSearch(request, handlers, { mode: 'live' | 'replay', speed })
+ * live   -> real TinyFish agents via backend
+ * replay -> backend replay of a REAL recorded live run (zero TinyFish calls)
+ * Backend unreachable or ?mock=1 -> bundled mock file
  */
 export function startSearch(request, handlers, opts = {}) {
   const { mode = 'replay', speed = 1 } = opts
+  stopSearch()
+  const forceMock =
+    typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('mock')
+  activeRun = forceMock
+    ? replayMock(request, handlers, speed)
+    : runBackend(request, handlers, mode, speed)
+  return activeRun
+}
 
-  if (mode === 'live') {
-    return { cancel() {} }
+function makeEmit(handlers) {
+  return (name, data) => {
+    const fn = handlers[name]
+    if (typeof fn === 'function') fn(data)
+  }
+}
+
+function runBackend(request, handlers, mode, speed) {
+  const emit = makeEmit(handlers)
+  let es = null
+  let cancelled = false
+  let fallback = null
+
+  const run = {
+    cancel() {
+      cancelled = true
+      if (es) es.close()
+      if (fallback) fallback.cancel()
+    },
   }
 
-  return replayMock(request, handlers, speed)
+  const body = JSON.stringify({ ...request, mode: mode === 'live' ? 'live' : 'replay' })
+
+  fetch(`${API_BASE}/api/search`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body,
+  })
+    .then(async (r) => {
+      if (!r.ok) {
+        const text = await r.text()
+        emit('error', { pharmacy: null, message: `Backend rejected request (${r.status}): ${text.slice(0, 200)}` })
+        emit('done', { search_id: null, duration_ms: 0 })
+        return null
+      }
+      return r.json()
+    })
+    .then((res) => {
+      if (!res || cancelled) return
+      if (!res.search_id) {
+        emit('error', { pharmacy: null, message: 'No saved live run available for replay yet' })
+        emit('done', { search_id: null, duration_ms: 0 })
+        return
+      }
+      es = new EventSource(`${API_BASE}/api/search/${res.search_id}/stream`)
+      EVENTS.forEach((name) =>
+        es.addEventListener(name, (e) => {
+          let data = {}
+          try { data = JSON.parse(e.data) } catch (_) {}
+          emit(name, data)
+          if (name === 'done') es.close()
+        })
+      )
+      es.onerror = () => {}
+    })
+    .catch((err) => {
+      if (cancelled) return
+      console.warn('[RxRadar] backend unreachable, using bundled mock:', err)
+      fallback = replayMock(request, handlers, speed)
+    })
+
+  return run
 }
 
 function replayMock(request, handlers, speed) {
   const timers = []
-  const emit = (name, data) => {
-    const fn = handlers[name]
-    if (typeof fn === 'function') fn(data)
-  }
-
+  const emit = makeEmit(handlers)
   const events = mockData.events || []
   let cumulative = 0
 
   events.forEach((ev) => {
-    const targetMs = typeof ev.at_ms === 'number'
-      ? ev.at_ms
-      : (cumulative += (ev.delay_ms || 0))
-
-    const timerId = setTimeout(() => {
-      emit(ev.event, ev.data)
-    }, targetMs / speed)
-    timers.push(timerId)
+    const targetMs = typeof ev.at_ms === 'number' ? ev.at_ms : (cumulative += ev.delay_ms || 0)
+    timers.push(setTimeout(() => emit(ev.event, ev.data), targetMs / speed))
   })
 
-  activeRun = {
+  return {
     cancel() {
       timers.forEach(clearTimeout)
       timers.length = 0
     },
   }
-  return activeRun
 }
 
 export function stopSearch() {
   if (activeRun) activeRun.cancel()
   activeRun = null
+}
+
+export async function createMonitor({ search_id, salt, pharmacy = 'pharmeasy', target_per_unit }) {
+  const r = await fetch(`${API_BASE}/api/monitor`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ search_id, salt, pharmacy, target_per_unit }),
+  })
+  if (!r.ok) throw new Error(`Monitor failed (${r.status})`)
+  return r.json()
+}
+
+export async function fetchPresets() {
+  const r = await fetch(`${API_BASE}/api/medicines`)
+  if (!r.ok) throw new Error(`Presets failed (${r.status})`)
+  return (await r.json()).medicines
 }
