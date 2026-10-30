@@ -135,7 +135,7 @@ async def onemg(
     query = salt.replace("+", " ")
     url = f"https://www.1mg.com/search/all?name={quote(query)}"
     result = await run_agent_stream(
-        url, GOAL_1MG, AGENT_SCHEMA_1MG, on_live_url, on_progress, max_steps=12
+        url, GOAL_1MG, AGENT_SCHEMA_1MG, on_live_url, on_progress, max_steps=None
     )
     return _from_agent(result, "strength")
 
@@ -147,7 +147,7 @@ async def apollo(
 ) -> list[dict]:
     url = f"https://www.apollopharmacy.in/search-medicines/{quote(brand)}"
     result = await run_agent_stream(
-        url, GOAL_APOLLO, AGENT_SCHEMA_APOLLO, on_live_url, on_progress, max_steps=10
+        url, GOAL_APOLLO, AGENT_SCHEMA_APOLLO, on_live_url, on_progress, max_steps=None
     )
     return _from_agent(result, "composition")
 
@@ -184,4 +184,65 @@ async def pharmeasy_multi(queries: list[str], timeout_ms: int = 8000) -> list[di
             if p["name"] not in seen:
                 seen.add(p["name"])
                 out.append(p)
+    return out
+
+
+_PE_SEM = None
+
+
+async def pharmeasy_multi(queries: list[str], timeout_ms: int = 12000) -> list[dict]:
+    """Max 6 TinyFish fetches in flight at once; each URL single attempt, skipped if slow."""
+    import asyncio
+    from app.tinyfish_client import _raw_fetch_markdown
+
+    global _PE_SEM
+    if _PE_SEM is None:
+        _PE_SEM = asyncio.Semaphore(8)
+
+    async def one(q: str) -> str:
+        url = f"https://pharmeasy.in/search/all?name={quote(q)}"
+        async with _PE_SEM:
+            try:
+                res = await asyncio.wait_for(_raw_fetch_markdown([url], timeout_ms), timeout=timeout_ms / 1000 + 2)
+                return next(iter(res.values()), "") if res else ""
+            except Exception:
+                return ""
+
+    pages = await asyncio.gather(*(one(q) for q in queries))
+    seen, out = set(), []
+    for md in pages:
+        for p in parse_pharmeasy(md):
+            if p["name"] not in seen:
+                seen.add(p["name"])
+                out.append(p)
+    return out
+
+
+# --- v2 goals: wait for results to load; agents were reading the page too early ---
+GOAL_1MG = (
+    "Wait until the search results have fully loaded and the product cards show prices. "
+    "If a location popup appears, close it. Do not open product pages and do not log in. "
+    "Read the first 5 product cards in the search results and return name, strength, "
+    "pack size, selling price (Rs) and MRP (Rs) for each. Only report products and prices "
+    "you can actually see on the page; if none are visible yet, wait and look again."
+)
+
+GOAL_APOLLO = (
+    "Wait until the search results have fully loaded and the product cards show prices. "
+    "If a popup appears, close it. Do not open product pages, do not log in and do not set a pincode. "
+    "Read the first 5 product cards in the search results and return name, composition, "
+    "pack size, selling price (Rs) and MRP (Rs) for each. Only report products and prices "
+    "you can actually see on the page; never repeat the same product."
+)
+
+_from_agent_raw = _from_agent
+
+
+def _from_agent(result, comp_key):
+    seen, out = set(), []
+    for p in _from_agent_raw(result, comp_key):
+        k = (p["name"].strip().lower(), p["price"])
+        if k not in seen:
+            seen.add(k)
+            out.append(p)
     return out
