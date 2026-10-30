@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   Radar, LayoutGrid, ScanLine, GitCompare, TrendingDown,
   Bookmark, Settings, ChevronLeft,
@@ -5,10 +6,10 @@ import {
 
 const NAV = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
-  { key: 'scan',      label: 'Scan Rx',   icon: ScanLine },
-  { key: 'compare',   label: 'Compare',   icon: GitCompare },
-  { key: 'savings',   label: 'Savings',   icon: TrendingDown },
-  { key: 'saved',     label: 'Saved',     icon: Bookmark },
+  { key: 'scan', label: 'Scan Rx', icon: ScanLine },
+  { key: 'compare', label: 'Compare', icon: GitCompare },
+  { key: 'savings', label: 'Savings', icon: TrendingDown },
+  { key: 'saved', label: 'Saved', icon: Bookmark },
 ]
 
 export default function LeftRail({ active, onNavigate, collapsed, setCollapsed }) {

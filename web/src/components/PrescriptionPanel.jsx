@@ -1,3 +1,4 @@
+import React from 'react'
 import { Zap, StopCircle, MapPin, Clock, Pill, Store, Command, Save } from 'lucide-react'
 import MedicineList from './MedicineList'
 import OCRUpload from './OCRUpload'
@@ -79,9 +80,9 @@ export default function PrescriptionPanel({
 
           {/* run summary */}
           <div className="space-y-2 text-sm">
-            <SummaryLine icon={<Pill size={13} />}   label="Medicines" value={medCount} />
-            <SummaryLine icon={<Store size={13} />}  label="Pharmacies" value={3} />
-            <SummaryLine icon={<Clock size={13} />}  label="Est. time" value="~8 sec" />
+            <SummaryLine icon={<Pill size={13} />} label="Medicines" value={medCount} />
+            <SummaryLine icon={<Store size={13} />} label="Pharmacies" value={3} />
+            <SummaryLine icon={<Clock size={13} />} label="Est. time" value="~8 sec" />
           </div>
 
           <div className="mt-auto space-y-2.5">

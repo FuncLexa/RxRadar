@@ -1,3 +1,4 @@
+import React from 'react'
 import SectionHead from '../components/SectionHead'
 import SavedPrescriptions from '../components/SavedPrescriptions'
 

@@ -1,3 +1,4 @@
+import React from 'react'
 import { useState } from 'react'
 import { Plus, X, Minus, Target, Pencil } from 'lucide-react'
 

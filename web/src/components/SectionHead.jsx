@@ -1,3 +1,4 @@
+import React from 'react'
 export default function SectionHead({ step, title, sub, meta }) {
   return (
     <div className="mb-5 flex items-end justify-between gap-6">

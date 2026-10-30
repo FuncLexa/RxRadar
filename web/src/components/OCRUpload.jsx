@@ -1,3 +1,4 @@
+import React from 'react'
 import { useRef, useState } from 'react'
 import { ScanLine, Upload, X, Check, Loader2, AlertCircle } from 'lucide-react'
 import { runOCR } from '../lib/ocr'

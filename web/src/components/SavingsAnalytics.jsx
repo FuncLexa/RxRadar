@@ -1,3 +1,4 @@
+import React from 'react'
 import { useMemo } from 'react'
 import { TrendingUp, TrendingDown, Activity, Layers } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'

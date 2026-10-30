@@ -1,3 +1,4 @@
+import React from 'react'
 import { useMemo } from 'react'
 import { ShoppingBasket, Check } from 'lucide-react'
 import { inr, useCountUp } from './useCountUp'

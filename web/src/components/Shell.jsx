@@ -1,4 +1,5 @@
-import { Radar, ShieldCheck, Activity, CircleDot } from 'lucide-react'
+import React from 'react'
+import { ShieldCheck, Activity, CircleDot } from 'lucide-react'
 
 export function Ambient() { return <div className="ambient" aria-hidden="true" /> }
 
@@ -15,9 +16,6 @@ export function Header({ mode, setMode, speed, setSpeed, running }) {
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/50 ring-1 ring-white/70 backdrop-blur px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-faint">
               <CircleDot size={11} /> Idle
             </span>
-          )}
-          {mode === 'replay' && (
-            <span className="demo-chip">Demo mode · replay</span>
           )}
         </div>
 

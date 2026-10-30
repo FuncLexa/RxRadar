@@ -1,3 +1,4 @@
+import React from 'react'
 import SectionHead from '../components/SectionHead'
 import SavingsAnalytics from '../components/SavingsAnalytics'
 import SavingsCard from '../components/SavingsCard'

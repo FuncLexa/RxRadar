@@ -14,12 +14,12 @@ import { savePrescription, addReminder, recordRun, wipeAll } from './lib/storage
 
 const DEFAULT_PINCODE = '560064'
 const PHARMACY_NAMES = { pharmeasy: 'PharmEasy', '1mg': '1mg', apollo: 'Apollo' }
-const PHARMACY_DOTS  = { pharmeasy: 'bg-[#10847E]', '1mg': 'bg-[#F36F21]', apollo: 'bg-[#0A5BA1]' }
+const PHARMACY_DOTS = { pharmeasy: 'bg-[#10847E]', '1mg': 'bg-[#F36F21]', apollo: 'bg-[#0A5BA1]' }
 
 const EMPTY_AGENTS = () => ({
   pharmeasy: { status: 'queued', messages: [], url: null },
-  '1mg':     { status: 'queued', messages: [], url: null },
-  apollo:    { status: 'queued', messages: [], url: null },
+  '1mg': { status: 'queued', messages: [], url: null },
+  apollo: { status: 'queued', messages: [], url: null },
 })
 
 export default function App() {
@@ -192,7 +192,7 @@ export default function App() {
             )}
             {page === 'compare' && <Compare results={results} summary={summary} onNavigate={setPage} />}
             {page === 'savings' && <Savings summary={summary} onMonitor={onMonitor} />}
-            {page === 'saved'   && <Saved onRestorePrescription={onRestorePrescription} />}
+            {page === 'saved' && <Saved onRestorePrescription={onRestorePrescription} />}
             {page === 'settings' && (
               <Settings
                 mode={mode} setMode={setMode}
