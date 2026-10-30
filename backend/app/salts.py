@@ -87,7 +87,7 @@ def validate(product: dict, salt: str, strength: str) -> tuple[bool, Optional[st
         return False, "unverified brand"
 
     need = _nums(strength)
-    have = _nums(_strip_pack(text))
+    have = _nums(_strip_pack(_g_to_mg(text)))
     if not have:
         return (True, None) if brand_hit else (False, "strength not shown")
     if not need.issubset(have) or (have - need):
@@ -161,3 +161,8 @@ SALT_DB["amlodipine"]["reject_words"] += ["lo", "s", "b", "nb"]
 SALT_DB["atorvastatin"]["reject_words"] += ["a", "c", "d"]
 
 SALT_DB['vildagliptin+metformin']['brands'].append('Vigliptin M')
+
+
+def _g_to_mg(text: str) -> str:
+    """'50Mg/1Gm' -> '50Mg/1000mg' so strengths compare correctly."""
+    return re.sub(r"(\d+(?:\.\d+)?)\s*(gm|g)\b", lambda m: f"{int(float(m.group(1)) * 1000)}mg", text, flags=re.I)
