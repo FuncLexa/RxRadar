@@ -6,9 +6,9 @@ import {
 } from 'lucide-react'
 
 const PHARMACIES = [
-  { key: 'pharmeasy', name: 'PharmEasy', method: 'Fetch',        methodKind: 'fetch',   domain: 'pharmeasy.in' },
-  { key: '1mg',       name: '1mg',       method: 'Browser agent', methodKind: 'browser', domain: '1mg.com' },
-  { key: 'apollo',    name: 'Apollo',    method: 'Browser agent', methodKind: 'browser', domain: 'apollopharmacy.in' },
+  { key: 'pharmeasy', name: 'PharmEasy', method: 'Fetch', methodKind: 'fetch', domain: 'pharmeasy.in' },
+  { key: '1mg', name: '1mg', method: 'Browser agent', methodKind: 'browser', domain: '1mg.com' },
+  { key: 'apollo', name: 'Apollo', method: 'Browser agent', methodKind: 'browser', domain: 'apollopharmacy.in' },
 ]
 
 export default function AgentGrid({ agents, results, running }) {
@@ -21,15 +21,15 @@ export default function AgentGrid({ agents, results, running }) {
         <div className="flex items-center gap-2.5">
           {anyRunning
             ? <span className="inline-flex items-center gap-1.5 rounded-full bg-white/60 ring-1 ring-white/70 backdrop-blur px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-primary">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-70 animate-ping" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
-                </span>
-                Live
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-70 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
               </span>
+              Live
+            </span>
             : <span className="inline-flex items-center gap-1.5 rounded-full bg-white/50 ring-1 ring-white/70 backdrop-blur px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-ink-faint">
-                Idle
-              </span>}
+              Idle
+            </span>}
           <p className="text-sm text-ink-soft">
             <span className="font-semibold text-ink">3 agents</span> searching live across Indian pharmacies
           </p>
@@ -69,8 +69,8 @@ function AgentCard({ pharmacy, agent, products }) {
 
   const borderTone =
     isFailed ? 'ring-1 ring-danger/30'
-    : isDone ? 'ring-1 ring-success/25'
-    : ''
+      : isDone ? 'ring-1 ring-success/25'
+        : ''
 
   return (
     <div className={`frost-panel overflow-hidden flex flex-col ${borderTone}`}>
@@ -136,8 +136,8 @@ function AgentCard({ pharmacy, agent, products }) {
 function PharmacyMark({ pharmacy }) {
   const tones = {
     pharmeasy: 'bg-[#10847E]/10 text-[#10847E] ring-[#10847E]/20',
-    '1mg':      'bg-[#F36F21]/10 text-[#F36F21] ring-[#F36F21]/20',
-    apollo:     'bg-[#0A5BA1]/10 text-[#0A5BA1] ring-[#0A5BA1]/20',
+    '1mg': 'bg-[#F36F21]/10 text-[#F36F21] ring-[#F36F21]/20',
+    apollo: 'bg-[#0A5BA1]/10 text-[#0A5BA1] ring-[#0A5BA1]/20',
   }
   const initials = { pharmeasy: 'PE', '1mg': '1M', apollo: 'AP' }
   return (
@@ -160,20 +160,20 @@ function MethodBadge({ kind, label }) {
 
 function StatusPill({ status }) {
   const map = {
-    queued:     { tone: 'bg-white/70 text-ink-faint ring-line', dot: 'bg-ink-faint', label: 'Queued' },
-    starting:   { tone: 'bg-primary-tint text-primary ring-primary/25', dot: 'bg-primary animate-pulse', label: 'Starting' },
-    browsing:   { tone: 'bg-primary-tint text-primary ring-primary/25', dot: 'bg-primary animate-pulse', label: 'Browsing' },
+    queued: { tone: 'bg-white/70 text-ink-faint ring-line', dot: 'bg-ink-faint', label: 'Queued' },
+    starting: { tone: 'bg-primary-tint text-primary ring-primary/25', dot: 'bg-primary animate-pulse', label: 'Starting' },
+    browsing: { tone: 'bg-primary-tint text-primary ring-primary/25', dot: 'bg-primary animate-pulse', label: 'Browsing' },
     extracting: { tone: 'bg-primary-tint text-primary ring-primary/25', dot: 'bg-primary animate-pulse', label: 'Extracting' },
-    done:       { tone: 'bg-success-tint text-success ring-success/25', dot: 'bg-success', label: 'Done' },
-    failed:     { tone: 'bg-danger-tint text-danger ring-danger/25', dot: 'bg-danger', label: 'Unavailable' },
-    timeout:    { tone: 'bg-danger-tint text-danger ring-danger/25', dot: 'bg-danger', label: 'Unavailable' },
+    done: { tone: 'bg-success-tint text-success ring-success/25', dot: 'bg-success', label: 'Done' },
+    failed: { tone: 'bg-danger-tint text-danger ring-danger/25', dot: 'bg-danger', label: 'Unavailable' },
+    timeout: { tone: 'bg-danger-tint text-danger ring-danger/25', dot: 'bg-danger', label: 'Unavailable' },
   }
   const s = map[status] || map.queued
   return (
     <span className={`inline-flex items-center gap-1.5 rounded-full ring-1 px-2 py-0.5 text-[11px] font-semibold ${s.tone}`}>
       {status === 'done'
         ? <Check size={11} strokeWidth={3} />
-        : ['failed','timeout'].includes(status)
+        : ['failed', 'timeout'].includes(status)
           ? <X size={11} strokeWidth={3} />
           : <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />}
       {s.label}
