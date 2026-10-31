@@ -9,6 +9,11 @@
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Python](https://img.shields.io/badge/Python%203.14-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
+[![Live Demo](https://img.shields.io/badge/%E2%96%B6%20Live%20Demo-rx--radar--sigma.vercel.app-E76F51?style=for-the-badge)](https://rx-radar-sigma.vercel.app)
+[![API](https://img.shields.io/badge/API-rxradar--api.onrender.com-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://rxradar-api.onrender.com/api/health)
+
+### 🔗 [**Try it live → rx-radar-sigma.vercel.app**](https://rx-radar-sigma.vercel.app)
+
 **Swim with TinyFish · Presidency University · 30 Oct 2026 · Team FuncLexa**
 
 </div>
@@ -24,6 +29,18 @@
 **₹9,363 / year** saved online alone for one patient on 3 chronic medicines · **₹10** of TinyFish credit per search
 
 </div>
+
+---
+
+## ▶️ Try it
+
+1. Open **[rx-radar-sigma.vercel.app](https://rx-radar-sigma.vercel.app)**
+2. Choose **Replay**: a real recorded live run (real prices, proof screenshots, Jan Aushadhi), free and instant
+3. Or choose **Live**: real TinyFish agents browse PharmEasy, 1mg and Apollo right now (capped per day to protect credits)
+4. Click **Find prices** and watch the agents work
+
+> [!NOTE]
+> The API runs on Render's free tier, which sleeps when idle. If the first search seems stuck, open [the health check](https://rxradar-api.onrender.com/api/health) once, wait ~50 s for it to wake, then try again.
 
 ---
 
@@ -156,6 +173,18 @@ Full API spec: [`rxradar_api_contract.md`](rxradar_api_contract.md)
 
 </details>
 
+<details>
+<summary><b>☁️ Deployment</b></summary>
+
+| Part | Host | Notes |
+|---|---|---|
+| Frontend (React + Vite) | **Vercel**: [rx-radar-sigma.vercel.app](https://rx-radar-sigma.vercel.app) | Root `web/`, env `VITE_API_BASE` |
+| Backend (FastAPI + SSE) | **Render**: [rxradar-api.onrender.com](https://rxradar-api.onrender.com/api/health) | Root `backend/`, `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+
+Backend environment: `TINYFISH_API_KEY`, `CORS_ORIGINS`, `REPLAY_ID` (pinned demo run), `LIVE_DAILY_LIMIT` (protects credits), `PYTHON_VERSION=3.12.7`.
+
+</details>
+
 ---
 
 ## 👥 Team FuncLexa
@@ -163,7 +192,7 @@ Full API spec: [`rxradar_api_contract.md`](rxradar_api_contract.md)
 | | Member | Built |
 |:-:|---|---|
 | 🧠 | **Mohammad Adnan Shakil** | Backend: TinyFish orchestration (all 5 tools), salt validation, optimiser, replay, proof screenshots |
-| 🎨 | **Sultan** | Frontend: live agent grid, savings UI, comparison matrix, in-browser OCR, integration |
+| 🎨 | **Sultan Salauddin Ansari** | Frontend: live agent grid, savings UI, comparison matrix, in-browser OCR, integration |
 
 <div align="center">
 
