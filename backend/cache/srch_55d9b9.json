@@ -1,0 +1,1603 @@
+{
+ "search_id": "srch_55d9b9",
+ "events": [
+  {
+   "t_ms": 1,
+   "event": "search_started",
+   "data": {
+    "search_id": "srch_55d9b9",
+    "pharmacies": [
+     "pharmeasy",
+     "1mg",
+     "apollo"
+    ],
+    "medicines": [
+     {
+      "brand": "Jalra M",
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "per_day": 2.0,
+      "hero": true
+     },
+     {
+      "brand": "Novastat 10",
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "per_day": 1.0,
+      "hero": false
+     },
+     {
+      "brand": "Thyronorm 50",
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "per_day": 1.0,
+      "hero": false
+     }
+    ]
+   }
+  },
+  {
+   "t_ms": 1,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "pharmeasy",
+    "salt": "vildagliptin+metformin",
+    "status": "starting",
+    "message": "Fetching PharmEasy results",
+    "elapsed_ms": 0
+   }
+  },
+  {
+   "t_ms": 1,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "1mg",
+    "salt": "vildagliptin+metformin",
+    "status": "starting",
+    "message": "Launching browser agent",
+    "elapsed_ms": 0
+   }
+  },
+  {
+   "t_ms": 516,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "status": "starting",
+    "message": "Launching browser agent",
+    "elapsed_ms": 0
+   }
+  },
+  {
+   "t_ms": 1289,
+   "event": "generic_option",
+   "data": {
+    "salt": "rosuvastatin",
+    "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+    "per_unit": 1.13,
+    "pack_qty": 15,
+    "price": 17.0,
+    "source": "janaushadhistore.in",
+    "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+   }
+  },
+  {
+   "t_ms": 1415,
+   "event": "generic_option",
+   "data": {
+    "salt": "vildagliptin+metformin",
+    "name": "vildagliptin 50 and metformin 500mg, 15s",
+    "per_unit": 1.88,
+    "pack_qty": 15,
+    "price": 28.13,
+    "source": "apijanaushadhi.in",
+    "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+   }
+  },
+  {
+   "t_ms": 1415,
+   "event": "summary",
+   "data": {
+    "final": false,
+    "sources_done": [],
+    "swaps": [
+     {
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "allowed": true,
+      "current": {
+       "name": "Jalra M",
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "cheapest": {
+       "name": null,
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "note": "Jalra M not found yet - checking pharmeasy, 1mg, apollo",
+      "generic": {
+       "name": "vildagliptin 50 and metformin 500mg, 15s",
+       "per_unit": 1.88,
+       "pack_qty": 15,
+       "price": 28.13,
+       "source": "apijanaushadhi.in",
+       "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+      },
+      "proof": null
+     },
+     {
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "allowed": true,
+      "current": {
+       "name": "Novastat 10",
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "cheapest": {
+       "name": null,
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "note": "Novastat 10 not found yet - checking pharmeasy",
+      "generic": {
+       "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+       "per_unit": 1.13,
+       "pack_qty": 15,
+       "price": 17.0,
+       "source": "janaushadhistore.in",
+       "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+      },
+      "proof": null
+     },
+     {
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "allowed": false,
+      "current": {
+       "name": "Thyronorm 50",
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "cheapest": {
+       "name": null,
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "generic": null,
+      "proof": null
+     }
+    ],
+    "flags": [
+     {
+      "salt": "levothyroxine",
+      "type": "NTI",
+      "message": "Narrow therapeutic index - brand switching not advised. Consult your doctor."
+     }
+    ],
+    "totals": {
+     "current_monthly": 0.0,
+     "optimised_monthly": 0.0,
+     "monthly_saving": 0.0,
+     "annual_saving": 0.0
+    },
+    "coverage": {
+     "pharmeasy": "all",
+     "1mg": "hero_only",
+     "apollo": "hero_only"
+    },
+    "cost": null
+   }
+  },
+  {
+   "t_ms": 2728,
+   "event": "price_result",
+   "data": {
+    "pharmacy": "pharmeasy",
+    "salt": "vildagliptin+metformin",
+    "strength": "50mg/500mg",
+    "products": [
+     {
+      "name": "Somglip M 50/500Mg Strip Of 10 Tablets",
+      "pack_qty": 10,
+      "price": 65.86,
+      "mrp": 89.0,
+      "composition": null,
+      "per_unit": 6.59,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Zukanorm M 50/500Mg Strip Of 20 Tablets",
+      "pack_qty": 20,
+      "price": 137.11,
+      "mrp": 185.28,
+      "composition": null,
+      "per_unit": 6.86,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Vildagard M 50/500Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 121.88,
+      "mrp": 162.5,
+      "composition": null,
+      "per_unit": 8.13,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Torglip M 50/500Mg Strip Of 10 Tablets",
+      "pack_qty": 10,
+      "price": 84.18,
+      "mrp": 113.76,
+      "composition": null,
+      "per_unit": 8.42,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Vildamac M 50/500Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 142.24,
+      "mrp": 187.16,
+      "composition": null,
+      "per_unit": 9.48,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Vildapride M 50/500Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 144.3,
+      "mrp": 195.0,
+      "composition": null,
+      "per_unit": 9.62,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Jalra M 50/500Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 238.27,
+      "mrp": 326.4,
+      "composition": null,
+      "per_unit": 15.88,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Jalra M 50Mg/1Gm Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 312.29,
+      "mrp": 427.8,
+      "composition": null,
+      "per_unit": 20.82,
+      "salt_match": false,
+      "reject_reason": "different strength"
+     },
+     {
+      "name": "Jalra M 50Mg/850Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 305.25,
+      "mrp": 418.15,
+      "composition": null,
+      "per_unit": 20.35,
+      "salt_match": false,
+      "reject_reason": "different strength"
+     }
+    ]
+   }
+  },
+  {
+   "t_ms": 2729,
+   "event": "summary",
+   "data": {
+    "final": false,
+    "sources_done": [],
+    "swaps": [
+     {
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "allowed": true,
+      "current": {
+       "name": "Jalra M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 15.88
+      },
+      "cheapest": {
+       "name": "Somglip M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 6.59
+      },
+      "monthly_saving": 557.4,
+      "annual_saving": 6688.8,
+      "generic": {
+       "name": "vildagliptin 50 and metformin 500mg, 15s",
+       "per_unit": 1.88,
+       "pack_qty": 15,
+       "price": 28.13,
+       "source": "apijanaushadhi.in",
+       "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+      },
+      "proof": null
+     },
+     {
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "allowed": true,
+      "current": {
+       "name": "Novastat 10",
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "cheapest": {
+       "name": null,
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "note": "Novastat 10 not found yet - checking pharmeasy",
+      "generic": {
+       "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+       "per_unit": 1.13,
+       "pack_qty": 15,
+       "price": 17.0,
+       "source": "janaushadhistore.in",
+       "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+      },
+      "proof": null
+     },
+     {
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "allowed": false,
+      "current": {
+       "name": "Thyronorm 50",
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "cheapest": {
+       "name": null,
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "generic": null,
+      "proof": null
+     }
+    ],
+    "flags": [
+     {
+      "salt": "levothyroxine",
+      "type": "NTI",
+      "message": "Narrow therapeutic index - brand switching not advised. Consult your doctor."
+     }
+    ],
+    "totals": {
+     "current_monthly": 952.8,
+     "optimised_monthly": 395.4,
+     "monthly_saving": 557.4,
+     "annual_saving": 6688.8
+    },
+    "coverage": {
+     "pharmeasy": "all",
+     "1mg": "hero_only",
+     "apollo": "hero_only"
+    },
+    "cost": null
+   }
+  },
+  {
+   "t_ms": 3854,
+   "event": "agent_live_url",
+   "data": {
+    "pharmacy": "1mg",
+    "salt": "vildagliptin+metformin",
+    "streaming_url": "https://ip-3-101-153-149.tetra-data.production.tinyfish.io/tf-2919d25e-cc7c-45be-89f3-c276535146c8/stream/0"
+   }
+  },
+  {
+   "t_ms": 4067,
+   "event": "price_result",
+   "data": {
+    "pharmacy": "pharmeasy",
+    "salt": "rosuvastatin",
+    "strength": "10mg",
+    "products": [
+     {
+      "name": "Roseday 10Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 167.76,
+      "mrp": 233.0,
+      "composition": null,
+      "per_unit": 11.18,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Rozat 10Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 202.03,
+      "mrp": 273.02,
+      "composition": null,
+      "per_unit": 13.47,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Rxtor 10Mg Strip Of 10 Tablets",
+      "pack_qty": 10,
+      "price": 148.38,
+      "mrp": 192.7,
+      "composition": null,
+      "per_unit": 14.84,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Rosuvas 10Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 273.75,
+      "mrp": 375.0,
+      "composition": null,
+      "per_unit": 18.25,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Rozavel 10Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 273.75,
+      "mrp": 375.0,
+      "composition": null,
+      "per_unit": 18.25,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Novastat 10Mg Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 279.22,
+      "mrp": 382.5,
+      "composition": null,
+      "per_unit": 18.61,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Novastat Cv 10Mg Strip Of 15 Capsules",
+      "pack_qty": 15,
+      "price": 311.36,
+      "mrp": 420.75,
+      "composition": null,
+      "per_unit": 20.76,
+      "salt_match": false,
+      "reject_reason": "different formulation (CV)"
+     },
+     {
+      "name": "Novastat Tg 10 Strip Of 15 Tablets",
+      "pack_qty": 15,
+      "price": 396.21,
+      "mrp": 542.75,
+      "composition": null,
+      "per_unit": 26.41,
+      "salt_match": false,
+      "reject_reason": "different formulation (TG)"
+     }
+    ]
+   }
+  },
+  {
+   "t_ms": 4067,
+   "event": "summary",
+   "data": {
+    "final": false,
+    "sources_done": [],
+    "swaps": [
+     {
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "allowed": true,
+      "current": {
+       "name": "Jalra M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 15.88
+      },
+      "cheapest": {
+       "name": "Somglip M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 6.59
+      },
+      "monthly_saving": 557.4,
+      "annual_saving": 6688.8,
+      "generic": {
+       "name": "vildagliptin 50 and metformin 500mg, 15s",
+       "per_unit": 1.88,
+       "pack_qty": 15,
+       "price": 28.13,
+       "source": "apijanaushadhi.in",
+       "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+      },
+      "proof": null
+     },
+     {
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "allowed": true,
+      "current": {
+       "name": "Novastat 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 18.61
+      },
+      "cheapest": {
+       "name": "Roseday 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 11.18
+      },
+      "monthly_saving": 222.9,
+      "annual_saving": 2674.8,
+      "generic": {
+       "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+       "per_unit": 1.13,
+       "pack_qty": 15,
+       "price": 17.0,
+       "source": "janaushadhistore.in",
+       "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+      },
+      "proof": null
+     },
+     {
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "allowed": false,
+      "current": {
+       "name": "Thyronorm 50",
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "cheapest": {
+       "name": null,
+       "pharmacy": null,
+       "per_unit": null
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "generic": null,
+      "proof": null
+     }
+    ],
+    "flags": [
+     {
+      "salt": "levothyroxine",
+      "type": "NTI",
+      "message": "Narrow therapeutic index - brand switching not advised. Consult your doctor."
+     }
+    ],
+    "totals": {
+     "current_monthly": 1511.1,
+     "optimised_monthly": 730.8,
+     "monthly_saving": 780.3,
+     "annual_saving": 9363.6
+    },
+    "coverage": {
+     "pharmeasy": "all",
+     "1mg": "hero_only",
+     "apollo": "hero_only"
+    },
+    "cost": null
+   }
+  },
+  {
+   "t_ms": 4395,
+   "event": "price_result",
+   "data": {
+    "pharmacy": "pharmeasy",
+    "salt": "levothyroxine",
+    "strength": "50mcg",
+    "products": [
+     {
+      "name": "Eltroxin 50Mcg Bottle Of 120 Tablets",
+      "pack_qty": 120,
+      "price": 84.93,
+      "mrp": 114.77,
+      "composition": null,
+      "per_unit": 0.71,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Thyronorm 50Mcg Bottle Of 120 Tablets",
+      "pack_qty": 120,
+      "price": 97.0,
+      "mrp": 132.87,
+      "composition": null,
+      "per_unit": 0.81,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Thyrox 50Mcg Bottle Of 120 Tablets",
+      "pack_qty": 120,
+      "price": 99.65,
+      "mrp": 132.87,
+      "composition": null,
+      "per_unit": 0.83,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Thyroneed 50Mcg Bottle Of 120 Tablets",
+      "pack_qty": 120,
+      "price": 102.31,
+      "mrp": 132.87,
+      "composition": null,
+      "per_unit": 0.85,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Euthyrox 50Mcg Bottle Of 100 Tablets",
+      "pack_qty": 100,
+      "price": 88.54,
+      "mrp": 110.68,
+      "composition": null,
+      "per_unit": 0.89,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Thyroup 50Mcg Bottle Of 120 Tablets",
+      "pack_qty": 120,
+      "price": 107.61,
+      "mrp": 132.85,
+      "composition": null,
+      "per_unit": 0.9,
+      "salt_match": true,
+      "reject_reason": null
+     }
+    ]
+   }
+  },
+  {
+   "t_ms": 4395,
+   "event": "summary",
+   "data": {
+    "final": false,
+    "sources_done": [],
+    "swaps": [
+     {
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "allowed": true,
+      "current": {
+       "name": "Jalra M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 15.88
+      },
+      "cheapest": {
+       "name": "Somglip M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 6.59
+      },
+      "monthly_saving": 557.4,
+      "annual_saving": 6688.8,
+      "generic": {
+       "name": "vildagliptin 50 and metformin 500mg, 15s",
+       "per_unit": 1.88,
+       "pack_qty": 15,
+       "price": 28.13,
+       "source": "apijanaushadhi.in",
+       "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+      },
+      "proof": null
+     },
+     {
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "allowed": true,
+      "current": {
+       "name": "Novastat 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 18.61
+      },
+      "cheapest": {
+       "name": "Roseday 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 11.18
+      },
+      "monthly_saving": 222.9,
+      "annual_saving": 2674.8,
+      "generic": {
+       "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+       "per_unit": 1.13,
+       "pack_qty": 15,
+       "price": 17.0,
+       "source": "janaushadhistore.in",
+       "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+      },
+      "proof": null
+     },
+     {
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "allowed": false,
+      "current": {
+       "name": "Thyronorm 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.81
+      },
+      "cheapest": {
+       "name": "Eltroxin 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.71
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "generic": null,
+      "proof": null
+     }
+    ],
+    "flags": [
+     {
+      "salt": "levothyroxine",
+      "type": "NTI",
+      "message": "Narrow therapeutic index - brand switching not advised. Consult your doctor."
+     }
+    ],
+    "totals": {
+     "current_monthly": 1511.1,
+     "optimised_monthly": 730.8,
+     "monthly_saving": 780.3,
+     "annual_saving": 9363.6
+    },
+    "coverage": {
+     "pharmeasy": "all",
+     "1mg": "hero_only",
+     "apollo": "hero_only"
+    },
+    "cost": null
+   }
+  },
+  {
+   "t_ms": 4395,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "pharmeasy",
+    "salt": "vildagliptin+metformin",
+    "status": "done",
+    "message": "3 medicines priced",
+    "elapsed_ms": 4394
+   }
+  },
+  {
+   "t_ms": 4395,
+   "event": "summary",
+   "data": {
+    "final": false,
+    "sources_done": [
+     "pharmeasy"
+    ],
+    "swaps": [
+     {
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "allowed": true,
+      "current": {
+       "name": "Jalra M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 15.88
+      },
+      "cheapest": {
+       "name": "Somglip M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 6.59
+      },
+      "monthly_saving": 557.4,
+      "annual_saving": 6688.8,
+      "generic": {
+       "name": "vildagliptin 50 and metformin 500mg, 15s",
+       "per_unit": 1.88,
+       "pack_qty": 15,
+       "price": 28.13,
+       "source": "apijanaushadhi.in",
+       "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+      },
+      "proof": null
+     },
+     {
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "allowed": true,
+      "current": {
+       "name": "Novastat 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 18.61
+      },
+      "cheapest": {
+       "name": "Roseday 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 11.18
+      },
+      "monthly_saving": 222.9,
+      "annual_saving": 2674.8,
+      "generic": {
+       "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+       "per_unit": 1.13,
+       "pack_qty": 15,
+       "price": 17.0,
+       "source": "janaushadhistore.in",
+       "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+      },
+      "proof": null
+     },
+     {
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "allowed": false,
+      "current": {
+       "name": "Thyronorm 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.81
+      },
+      "cheapest": {
+       "name": "Eltroxin 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.71
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "generic": null,
+      "proof": null
+     }
+    ],
+    "flags": [
+     {
+      "salt": "levothyroxine",
+      "type": "NTI",
+      "message": "Narrow therapeutic index - brand switching not advised. Consult your doctor."
+     }
+    ],
+    "totals": {
+     "current_monthly": 1511.1,
+     "optimised_monthly": 730.8,
+     "monthly_saving": 780.3,
+     "annual_saving": 9363.6
+    },
+    "coverage": {
+     "pharmeasy": "all",
+     "1mg": "hero_only",
+     "apollo": "hero_only"
+    },
+    "cost": null
+   }
+  },
+  {
+   "t_ms": 4716,
+   "event": "agent_live_url",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "streaming_url": "https://ip-3-101-153-149.tetra-data.production.tinyfish.io/tf-9eda9675-0571-45e8-951d-42c0ef926097/stream/0"
+   }
+  },
+  {
+   "t_ms": 5925,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "1mg",
+    "salt": "vildagliptin+metformin",
+    "status": "browsing",
+    "message": "Visit 1mg search results for vildagliptin metformin",
+    "elapsed_ms": 5924
+   }
+  },
+  {
+   "t_ms": 9708,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "status": "browsing",
+    "message": "Navigate to Jalra M medicine search page",
+    "elapsed_ms": 9193
+   }
+  },
+  {
+   "t_ms": 28242,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "status": "extracting",
+    "message": "Extract product card details from search results",
+    "elapsed_ms": 27727
+   }
+  },
+  {
+   "t_ms": 37947,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "1mg",
+    "salt": "vildagliptin+metformin",
+    "status": "extracting",
+    "message": "Extract first 5 product card details from search results",
+    "elapsed_ms": 37946
+   }
+  },
+  {
+   "t_ms": 44751,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "status": "extracting",
+    "message": "Extract first 5 product cards details",
+    "elapsed_ms": 44235
+   }
+  },
+  {
+   "t_ms": 55866,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "status": "browsing",
+    "message": "Get detailed product info for first 5 cards",
+    "elapsed_ms": 55351
+   }
+  },
+  {
+   "t_ms": 63694,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "1mg",
+    "salt": "vildagliptin+metformin",
+    "status": "extracting",
+    "message": "Return first 5 product cards with name, strength, pack size, price, and MRP",
+    "elapsed_ms": 63693
+   }
+  },
+  {
+   "t_ms": 65299,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "status": "browsing",
+    "message": "Verify correct MRP values for first 5 products",
+    "elapsed_ms": 64783
+   }
+  },
+  {
+   "t_ms": 66875,
+   "event": "price_result",
+   "data": {
+    "pharmacy": "1mg",
+    "salt": "vildagliptin+metformin",
+    "strength": "50mg/500mg",
+    "products": [
+     {
+      "name": "Vildanol MF 500mg/50mg Tablet",
+      "pack_qty": 15,
+      "price": 140.0,
+      "mrp": 203.5,
+      "composition": "500mg/50mg",
+      "per_unit": 9.33,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Galvamark Met 1000mg/50mg Tablet",
+      "pack_qty": 15,
+      "price": 157.0,
+      "mrp": 183.2,
+      "composition": "1000mg/50mg",
+      "per_unit": 10.47,
+      "salt_match": false,
+      "reject_reason": "different strength"
+     },
+     {
+      "name": "Vildanol MF 1000mg/50mg Tablet",
+      "pack_qty": 15,
+      "price": 182.0,
+      "mrp": 238.0,
+      "composition": "1000mg/50mg",
+      "per_unit": 12.13,
+      "salt_match": false,
+      "reject_reason": "different strength"
+     }
+    ]
+   }
+  },
+  {
+   "t_ms": 66875,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "1mg",
+    "salt": "vildagliptin+metformin",
+    "status": "done",
+    "message": "3 products found",
+    "elapsed_ms": 66874
+   }
+  },
+  {
+   "t_ms": 66875,
+   "event": "summary",
+   "data": {
+    "final": false,
+    "sources_done": [
+     "pharmeasy",
+     "1mg"
+    ],
+    "swaps": [
+     {
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "allowed": true,
+      "current": {
+       "name": "Jalra M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 15.88
+      },
+      "cheapest": {
+       "name": "Somglip M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 6.59
+      },
+      "monthly_saving": 557.4,
+      "annual_saving": 6688.8,
+      "generic": {
+       "name": "vildagliptin 50 and metformin 500mg, 15s",
+       "per_unit": 1.88,
+       "pack_qty": 15,
+       "price": 28.13,
+       "source": "apijanaushadhi.in",
+       "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+      },
+      "proof": null
+     },
+     {
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "allowed": true,
+      "current": {
+       "name": "Novastat 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 18.61
+      },
+      "cheapest": {
+       "name": "Roseday 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 11.18
+      },
+      "monthly_saving": 222.9,
+      "annual_saving": 2674.8,
+      "generic": {
+       "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+       "per_unit": 1.13,
+       "pack_qty": 15,
+       "price": 17.0,
+       "source": "janaushadhistore.in",
+       "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+      },
+      "proof": null
+     },
+     {
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "allowed": false,
+      "current": {
+       "name": "Thyronorm 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.81
+      },
+      "cheapest": {
+       "name": "Eltroxin 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.71
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "generic": null,
+      "proof": null
+     }
+    ],
+    "flags": [
+     {
+      "salt": "levothyroxine",
+      "type": "NTI",
+      "message": "Narrow therapeutic index - brand switching not advised. Consult your doctor."
+     }
+    ],
+    "totals": {
+     "current_monthly": 1511.1,
+     "optimised_monthly": 730.8,
+     "monthly_saving": 780.3,
+     "annual_saving": 9363.6
+    },
+    "coverage": {
+     "pharmeasy": "all",
+     "1mg": "hero_only",
+     "apollo": "hero_only"
+    },
+    "cost": null
+   }
+  },
+  {
+   "t_ms": 93393,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "status": "extracting",
+    "message": "Return first 5 product cards with details",
+    "elapsed_ms": 92877
+   }
+  },
+  {
+   "t_ms": 104575,
+   "event": "price_result",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "strength": "50mg/500mg",
+    "products": [
+     {
+      "name": "Vilcrown Met 50 mg/500 mg Tablet 15's",
+      "pack_qty": 15,
+      "price": 116.3,
+      "mrp": 168.5,
+      "composition": "Vildagliptin & Metformin Hydrochloride 50mg/500mg",
+      "per_unit": 7.75,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Vildasmart M 50 mg/500 mg Tablet 15's",
+      "pack_qty": 15,
+      "price": 154.5,
+      "mrp": 206.0,
+      "composition": "Vildagliptin 50 mg & Metformin Hydrochloride 500 mg",
+      "per_unit": 10.3,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Jalra-M 50 mg/500 mg Tablet 15's",
+      "pack_qty": 15,
+      "price": 326.0,
+      "mrp": 528.0,
+      "composition": "Vildagliptin 50 mg and Metformin Hydrochloride 500 mg",
+      "per_unit": 21.73,
+      "salt_match": true,
+      "reject_reason": null
+     },
+     {
+      "name": "Jalra-M 50 mg/1000 mg Tablet 15's",
+      "pack_qty": 15,
+      "price": 427.5,
+      "mrp": 528.0,
+      "composition": "Vildagliptin 50 mg and Metformin Hydrochloride 1000 mg",
+      "per_unit": 28.5,
+      "salt_match": false,
+      "reject_reason": "different strength"
+     },
+     {
+      "name": "Jalra-M 50 mg/850 mg Tablet 15's",
+      "pack_qty": 15,
+      "price": 418.0,
+      "mrp": 509.0,
+      "composition": "Vildagliptin 50 mg and Metformin Hydrochloride 850 mg",
+      "per_unit": 27.87,
+      "salt_match": false,
+      "reject_reason": "different strength"
+     }
+    ]
+   }
+  },
+  {
+   "t_ms": 104575,
+   "event": "agent_status",
+   "data": {
+    "pharmacy": "apollo",
+    "salt": "vildagliptin+metformin",
+    "status": "done",
+    "message": "5 products found",
+    "elapsed_ms": 104060
+   }
+  },
+  {
+   "t_ms": 104575,
+   "event": "summary",
+   "data": {
+    "final": false,
+    "sources_done": [
+     "pharmeasy",
+     "1mg",
+     "apollo"
+    ],
+    "swaps": [
+     {
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "allowed": true,
+      "current": {
+       "name": "Jalra M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 15.88
+      },
+      "cheapest": {
+       "name": "Somglip M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 6.59
+      },
+      "monthly_saving": 557.4,
+      "annual_saving": 6688.8,
+      "generic": {
+       "name": "vildagliptin 50 and metformin 500mg, 15s",
+       "per_unit": 1.88,
+       "pack_qty": 15,
+       "price": 28.13,
+       "source": "apijanaushadhi.in",
+       "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+      },
+      "proof": null
+     },
+     {
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "allowed": true,
+      "current": {
+       "name": "Novastat 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 18.61
+      },
+      "cheapest": {
+       "name": "Roseday 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 11.18
+      },
+      "monthly_saving": 222.9,
+      "annual_saving": 2674.8,
+      "generic": {
+       "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+       "per_unit": 1.13,
+       "pack_qty": 15,
+       "price": 17.0,
+       "source": "janaushadhistore.in",
+       "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+      },
+      "proof": null
+     },
+     {
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "allowed": false,
+      "current": {
+       "name": "Thyronorm 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.81
+      },
+      "cheapest": {
+       "name": "Eltroxin 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.71
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "generic": null,
+      "proof": null
+     }
+    ],
+    "flags": [
+     {
+      "salt": "levothyroxine",
+      "type": "NTI",
+      "message": "Narrow therapeutic index - brand switching not advised. Consult your doctor."
+     }
+    ],
+    "totals": {
+     "current_monthly": 1511.1,
+     "optimised_monthly": 730.8,
+     "monthly_saving": 780.3,
+     "annual_saving": 9363.6
+    },
+    "coverage": {
+     "pharmeasy": "all",
+     "1mg": "hero_only",
+     "apollo": "hero_only"
+    },
+    "cost": null
+   }
+  },
+  {
+   "t_ms": 104576,
+   "event": "cost",
+   "data": {
+    "agent_steps": 9,
+    "browser_minutes": 2.8,
+    "usd": 0.15,
+    "inr": 12.7,
+    "note": "Fetch + Search are free; cost is browser agents only"
+   }
+  },
+  {
+   "t_ms": 104576,
+   "event": "summary",
+   "data": {
+    "final": true,
+    "sources_done": [
+     "pharmeasy",
+     "1mg",
+     "apollo"
+    ],
+    "swaps": [
+     {
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "allowed": true,
+      "current": {
+       "name": "Jalra M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 15.88
+      },
+      "cheapest": {
+       "name": "Somglip M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 6.59
+      },
+      "monthly_saving": 557.4,
+      "annual_saving": 6688.8,
+      "generic": {
+       "name": "vildagliptin 50 and metformin 500mg, 15s",
+       "per_unit": 1.88,
+       "pack_qty": 15,
+       "price": 28.13,
+       "source": "apijanaushadhi.in",
+       "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+      },
+      "proof": null
+     },
+     {
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "allowed": true,
+      "current": {
+       "name": "Novastat 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 18.61
+      },
+      "cheapest": {
+       "name": "Roseday 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 11.18
+      },
+      "monthly_saving": 222.9,
+      "annual_saving": 2674.8,
+      "generic": {
+       "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+       "per_unit": 1.13,
+       "pack_qty": 15,
+       "price": 17.0,
+       "source": "janaushadhistore.in",
+       "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+      },
+      "proof": null
+     },
+     {
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "allowed": false,
+      "current": {
+       "name": "Thyronorm 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.81
+      },
+      "cheapest": {
+       "name": "Eltroxin 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.71
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "generic": null,
+      "proof": null
+     }
+    ],
+    "flags": [
+     {
+      "salt": "levothyroxine",
+      "type": "NTI",
+      "message": "Narrow therapeutic index - brand switching not advised. Consult your doctor."
+     }
+    ],
+    "totals": {
+     "current_monthly": 1511.1,
+     "optimised_monthly": 730.8,
+     "monthly_saving": 780.3,
+     "annual_saving": 9363.6
+    },
+    "coverage": {
+     "pharmeasy": "all",
+     "1mg": "hero_only",
+     "apollo": "hero_only"
+    },
+    "cost": {
+     "agent_steps": 9,
+     "browser_minutes": 2.8,
+     "usd": 0.15,
+     "inr": 12.7,
+     "note": "Fetch + Search are free; cost is browser agents only"
+    }
+   }
+  },
+  {
+   "t_ms": 113484,
+   "event": "proof",
+   "data": {
+    "salt": "vildagliptin+metformin",
+    "pharmacy": "pharmeasy",
+    "product": "Somglip M 50/500Mg",
+    "per_unit": 6.59,
+    "image": "/static/proofs/srch_55d9b9_vildagliptin_metformin.png",
+    "highlighted": true,
+    "source_url": "https://pharmeasy.in/search/all?name=Somglip%20M%2050/500Mg"
+   }
+  },
+  {
+   "t_ms": 123919,
+   "event": "proof",
+   "data": {
+    "salt": "rosuvastatin",
+    "pharmacy": "pharmeasy",
+    "product": "Roseday 10Mg",
+    "per_unit": 11.18,
+    "image": "/static/proofs/srch_55d9b9_rosuvastatin.png",
+    "highlighted": true,
+    "source_url": "https://pharmeasy.in/search/all?name=Roseday%2010Mg"
+   }
+  },
+  {
+   "t_ms": 123919,
+   "event": "summary",
+   "data": {
+    "final": true,
+    "sources_done": [
+     "pharmeasy",
+     "1mg",
+     "apollo"
+    ],
+    "swaps": [
+     {
+      "salt": "vildagliptin+metformin",
+      "strength": "50mg/500mg",
+      "allowed": true,
+      "current": {
+       "name": "Jalra M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 15.88
+      },
+      "cheapest": {
+       "name": "Somglip M 50/500Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 6.59
+      },
+      "monthly_saving": 557.4,
+      "annual_saving": 6688.8,
+      "generic": {
+       "name": "vildagliptin 50 and metformin 500mg, 15s",
+       "per_unit": 1.88,
+       "pack_qty": 15,
+       "price": 28.13,
+       "source": "apijanaushadhi.in",
+       "url": "https://www.apijanaushadhi.in/product-page/vildagliptin-50-and-metformin-500mg-15s?srsltid=AYCX9vKpe08dNPxXb7eMpbmP8fF58ulN9lfvqOWZevd_W9-k2bVnePoE"
+      },
+      "proof": {
+       "product": "Somglip M 50/500Mg",
+       "per_unit": 6.59,
+       "image": "/static/proofs/srch_55d9b9_vildagliptin_metformin.png",
+       "highlighted": true,
+       "source_url": "https://pharmeasy.in/search/all?name=Somglip%20M%2050/500Mg"
+      }
+     },
+     {
+      "salt": "rosuvastatin",
+      "strength": "10mg",
+      "allowed": true,
+      "current": {
+       "name": "Novastat 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 18.61
+      },
+      "cheapest": {
+       "name": "Roseday 10Mg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 11.18
+      },
+      "monthly_saving": 222.9,
+      "annual_saving": 2674.8,
+      "generic": {
+       "name": "Rosuvastatin 10mg Tablet - Janaushadhi Store",
+       "per_unit": 1.13,
+       "pack_qty": 15,
+       "price": 17.0,
+       "source": "janaushadhistore.in",
+       "url": "https://janaushadhistore.in/shop/rosuvastatin-10mg-tablet/"
+      },
+      "proof": {
+       "product": "Roseday 10Mg",
+       "per_unit": 11.18,
+       "image": "/static/proofs/srch_55d9b9_rosuvastatin.png",
+       "highlighted": true,
+       "source_url": "https://pharmeasy.in/search/all?name=Roseday%2010Mg"
+      }
+     },
+     {
+      "salt": "levothyroxine",
+      "strength": "50mcg",
+      "allowed": false,
+      "current": {
+       "name": "Thyronorm 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.81
+      },
+      "cheapest": {
+       "name": "Eltroxin 50Mcg",
+       "pharmacy": "pharmeasy",
+       "per_unit": 0.71
+      },
+      "monthly_saving": 0.0,
+      "annual_saving": 0.0,
+      "generic": null,
+      "proof": null
+     }
+    ],
+    "flags": [
+     {
+      "salt": "levothyroxine",
+      "type": "NTI",
+      "message": "Narrow therapeutic index - brand switching not advised. Consult your doctor."
+     }
+    ],
+    "totals": {
+     "current_monthly": 1511.1,
+     "optimised_monthly": 730.8,
+     "monthly_saving": 780.3,
+     "annual_saving": 9363.6
+    },
+    "coverage": {
+     "pharmeasy": "all",
+     "1mg": "hero_only",
+     "apollo": "hero_only"
+    },
+    "cost": {
+     "agent_steps": 9,
+     "browser_minutes": 2.8,
+     "usd": 0.15,
+     "inr": 12.7,
+     "note": "Fetch + Search are free; cost is browser agents only"
+    }
+   }
+  },
+  {
+   "t_ms": 123919,
+   "event": "done",
+   "data": {
+    "search_id": "srch_55d9b9",
+    "duration_ms": 123919
+   }
+  }
+ ]
+}

@@ -12,6 +12,7 @@ app = FastAPI(title="RxRadar API")
 
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=config.CORS_ORIGINS,
     allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,7 +30,7 @@ async def start_search(req: SearchRequest):
     if req.mode == "replay":
         sid = orchestrator.start_replay()
     else:
-        sid = orchestrator.start(req)
+        sid = _start(req)
     return {"search_id": sid}
 
 
@@ -98,3 +99,21 @@ from fastapi.staticfiles import StaticFiles
 _static_dir = Path(__file__).resolve().parents[1] / "static"
 _static_dir.joinpath("proofs").mkdir(parents=True, exist_ok=True)
 app.mount("/static", StaticFiles(directory=str(_static_dir)), name="static")
+
+
+import datetime as _dt
+
+_LIVE = {"day": None, "count": 0}
+
+
+def _start(req):
+    """Replay is always free. Live is capped per day to protect TinyFish credits."""
+    if req.mode == "replay":
+        return orchestrator.start_replay()
+    today = _dt.date.today().isoformat()
+    if _LIVE["day"] != today:
+        _LIVE.update(day=today, count=0)
+    if _LIVE["count"] >= config.LIVE_DAILY_LIMIT:
+        raise HTTPException(status_code=429, detail="Live searches are paused for today to protect credits. Switch to Replay to see a recorded live run.")
+    _LIVE["count"] += 1
+    return orchestrator.start(req)
